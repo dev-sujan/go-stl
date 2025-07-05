@@ -257,63 +257,40 @@ func (ms *MultiSet[T]) Filter(predicate func(T) bool) *MultiSet[T] {
 }
 
 // MostCommon returns the most frequently occurring elements
-func (ms *MultiSet[T]) MostCommon(n int) []T {
+// and LeastCommon returns the least frequently occurring elements.
+// To avoid code duplication, the core logic is factored into a helper.
+func (ms *MultiSet[T]) mostOrLeastCommon(n int, least bool) []T {
 	if n <= 0 {
 		return []T{}
 	}
-
-	// Create slice of elements with their counts
 	type elementCount struct {
 		element T
 		count   int
 	}
-
 	var elements []elementCount
 	for element, count := range ms.data {
 		elements = append(elements, elementCount{element, count})
 	}
-
-	// Sort by count (descending)
-	sort.Slice(elements, func(i, j int) bool {
-		return elements[i].count > elements[j].count
-	})
-
-	// Return top n elements
+	if least {
+		sort.Slice(elements, func(i, j int) bool {
+			return elements[i].count < elements[j].count
+		})
+	} else {
+		sort.Slice(elements, func(i, j int) bool {
+			return elements[i].count > elements[j].count
+		})
+	}
 	result := make([]T, 0, n)
 	for i := 0; i < n && i < len(elements); i++ {
 		result = append(result, elements[i].element)
 	}
-
 	return result
 }
 
-// LeastCommon returns the least frequently occurring elements
+func (ms *MultiSet[T]) MostCommon(n int) []T {
+	return ms.mostOrLeastCommon(n, false)
+}
+
 func (ms *MultiSet[T]) LeastCommon(n int) []T {
-	if n <= 0 {
-		return []T{}
-	}
-
-	// Create slice of elements with their counts
-	type elementCount struct {
-		element T
-		count   int
-	}
-
-	var elements []elementCount
-	for element, count := range ms.data {
-		elements = append(elements, elementCount{element, count})
-	}
-
-	// Sort by count (ascending)
-	sort.Slice(elements, func(i, j int) bool {
-		return elements[i].count < elements[j].count
-	})
-
-	// Return bottom n elements
-	result := make([]T, 0, n)
-	for i := 0; i < n && i < len(elements); i++ {
-		result = append(result, elements[i].element)
-	}
-
-	return result
+	return ms.mostOrLeastCommon(n, true)
 }

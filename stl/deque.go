@@ -324,7 +324,7 @@ func (d *Deque[T]) RotateLeft(n int) {
 		return
 	}
 
-	n = n % d.size
+	n %= d.size
 	if n < 0 {
 		n += d.size
 	}
@@ -342,7 +342,7 @@ func (d *Deque[T]) RotateRight(n int) {
 		return
 	}
 
-	n = n % d.size
+	n %= d.size
 	if n < 0 {
 		n += d.size
 	}

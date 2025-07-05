@@ -172,11 +172,10 @@ func (tm *TreeMap[K, V]) containsValueRecursive(node *TreeMapNode[K, V], value V
 }
 
 // Min returns the key-value pair with the minimum key
-func (tm *TreeMap[K, V]) Min() (K, V, bool) {
+// Named return values for clarity and to satisfy linter
+func (tm *TreeMap[K, V]) Min() (key K, value V, ok bool) {
 	if tm.IsEmpty() {
-		var zeroK K
-		var zeroV V
-		return zeroK, zeroV, false
+		return key, value, false
 	}
 	node := tm.minNode(tm.root)
 	return node.Key, node.Value, true

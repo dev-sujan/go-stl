@@ -324,7 +324,7 @@ func (t *Trie) EditDistance(word1, word2 string) int {
 			if word1[i-1] == word2[j-1] {
 				dp[i][j] = dp[i-1][j-1]
 			} else {
-				dp[i][j] = 1 + min(dp[i-1][j], min(dp[i][j-1], dp[i-1][j-1]))
+				dp[i][j] = 1 + minInt(dp[i-1][j], minInt(dp[i][j-1], dp[i-1][j-1]))
 			}
 		}
 	}
@@ -332,8 +332,8 @@ func (t *Trie) EditDistance(word1, word2 string) int {
 	return dp[m][n]
 }
 
-// min returns the minimum of two integers
-func min(a, b int) int {
+// minInt returns the minimum of two integers (avoid shadowing predeclared min)
+func minInt(a, b int) int {
 	if a < b {
 		return a
 	}
