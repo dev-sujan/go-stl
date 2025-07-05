@@ -7,6 +7,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/dev-sujan/go-stl.svg)](https://pkg.go.dev/github.com/dev-sujan/go-stl)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dev-sujan/go-stl)](https://goreportcard.com/report/github.com/dev-sujan/go-stl)
 [![Build Status](https://github.com/dev-sujan/go-stl/actions/workflows/ci.yml/badge.svg)](https://github.com/dev-sujan/go-stl/actions)
+[![codecov](https://codecov.io/gh/dev-sujan/go-stl/branch/main/graph/badge.svg)](https://codecov.io/gh/dev-sujan/go-stl)
 
 A comprehensive, robust, and user-friendly implementation of essential data structures and algorithms for Go, inspired by Java Collections and C++ STL. Designed for productivity, clarity, and performance, with a focus on generics, a consistent API, and advanced features.
 
@@ -537,17 +538,44 @@ Below is a comprehensive table of time complexities for all major operations, in
 
 ---
 
-## 🧪 Testing & Examples
+## 🧪 Development and Testing
 
-- All structures have unit and benchmark tests (`*_test.go`)
-- See `examples/main.go` for more usage
-- Run all tests:
-  ```bash
-  go test ./...
-  go test -cover ./...
-  go test -bench=. ./...
-  go run examples/main.go
-  ```
+### Running Tests
+
+To run all tests:
+
+```bash
+go test -v ./stl
+```
+
+To run tests with race detection and generate coverage:
+
+```bash
+go test -v -race -coverprofile=coverage.txt -covermode=atomic ./stl
+```
+
+### Running Examples
+
+The examples directory contains sample usage of all data structures:
+
+```bash
+go run examples/main.go
+```
+
+### Continuous Integration
+
+This project uses GitHub Actions for CI. The workflow includes:
+- Testing on multiple platforms (Ubuntu, Windows, macOS) and Go versions
+- Code linting with golangci-lint
+- Security scanning with gosec
+- Dependency scanning
+- Code coverage reporting with Codecov
+
+---
+
+## 📪 Contact & Support
+
+For questions, suggestions, or support, please use GitHub Issues or Discussions. We welcome feedback and contributions!
 
 ---
 
