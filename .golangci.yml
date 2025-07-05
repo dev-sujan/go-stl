@@ -1,55 +1,70 @@
 run:
   timeout: 5m
-  go: "1.21"
+  go: "1.22.0"
 
 linters:
   enable:
+    # Code format and style
     - gofmt
     - goimports
+    - gocritic
+    - stylecheck
+    - whitespace
+
+    # Code correctness
     - govet
     - errcheck
     - staticcheck
     - gosimple
     - ineffassign
+    - typecheck
+
+    # Code simplification
+    - unconvert
     - unused
-    - misspell
+    - unparam
+
+    # Security
     - gosec
+    - noctx
+
+    # Complexity and duplication
     - gocyclo
     - dupl
     - goconst
-    - gocritic
-    - godox
-    - gomnd
-    - goprintffuncname
-    - gosec
-    - gosimple
-    - govet
-    - ineffassign
+
+    # Documentation and naming
     - misspell
+    - godox
+    - goprintffuncname
+
+    # Other
+    - gomnd
     - nakedret
-    - noctx
     - nolintlint
     - rowserrcheck
-    - staticcheck
-    - structcheck
-    - stylecheck
-    - typecheck
-    - unconvert
-    - unparam
-    - unused
-    - varcheck
-    - whitespace
 
 linters-settings:
+  # Complexity checks
   gocyclo:
     min-complexity: 15
   dupl:
     threshold: 100
+
+  # Constants and magic numbers
   goconst:
     min-len: 3
     min-occurrences: 3
   gomnd:
-    checks: argument,case,condition,operation,return,assign
+    checks:
+      - argument
+      - case
+      - condition
+      - operation
+      - return
+      - assign
+
+  # Code style and consistency
   gocritic:
     enabled-tags:
       - diagnostic
@@ -58,23 +73,27 @@ linters-settings:
       - performance
       - style
     disabled-checks:
-      - commentFormatting
-      - hugeParam
-      - ifElseChain
-      - octalLiteral
-      - whyNoLint
-      - wrapperFunc
+      - commentFormatting # Too strict for our needs
+      - hugeParam # Not relevant for our use case
+      - ifElseChain # We prefer explicit if-else in some cases
+      - octalLiteral # Not used in our codebase
+      - whyNoLint # We document nolint where needed
+      - wrapperFunc # Too many false positives
 
 issues:
+  # Exclude specific linters from test files and examples
   exclude-rules:
+    # Test files can use magic numbers and may be more complex
     - path: _test\.go
       linters:
-        - gomnd
-        - gocyclo
-        - dupl
+        - gomnd # Allow magic numbers in tests
+        - gocyclo # Allow more complex test functions
+        - dupl # Allow similar test cases
+
+    # Example code should be simple and straightforward
     - path: examples/
       linters:
-        - gomnd
-        - gocyclo
-        - dupl
-        - gosec 
+        - gomnd # Allow magic numbers in examples
+        - gocyclo # Allow simpler but maybe not optimal code
+        - dupl # Allow repeated examples
+        - gosec # Allow simplified security for examples
