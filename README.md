@@ -1,5 +1,9 @@
 # Go STL (Standard Template Library)
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dev-sujan/go-stl/main/docs/logo.png" alt="Go STL Logo" width="320"/>
+</p>
+
 [![Go Reference](https://pkg.go.dev/badge/github.com/dev-sujan/go-stl.svg)](https://pkg.go.dev/github.com/dev-sujan/go-stl)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dev-sujan/go-stl)](https://goreportcard.com/report/github.com/dev-sujan/go-stl)
 [![Build Status](https://github.com/dev-sujan/go-stl/actions/workflows/ci.yml/badge.svg)](https://github.com/dev-sujan/go-stl/actions)
@@ -81,7 +85,7 @@ package main
 
 import (
     "fmt"
-    "github.com/dev-sujan/go-stl"
+    "github.com/dev-sujan/go-stl/stl"
 )
 
 func main() {
@@ -89,7 +93,7 @@ func main() {
     set := stl.NewSet[int]()
     set.Add(1)
     set.Add(2)
-    fmt.Println("Set:", set) // Set[1 2 3]
+    fmt.Println("Set:", set) // Set[1 2]
 
     // MultiSet: Count duplicates
     ms := stl.NewMultiSet[string]()
@@ -134,6 +138,20 @@ func main() {
     fmt.Println("TreeMap Keys:", treeMap.Keys()) // [apple banana cherry]
 }
 ```
+
+---
+
+## ❓ Why Go STL?
+
+Go STL fills the gap in Go's standard library by providing a modern, consistent, and feature-rich set of data structures and algorithms, inspired by the best of Java and C++ but designed for Go's simplicity and performance. 
+
+- **No more reinventing the wheel:** Use robust, tested, and production-ready collections out of the box.
+- **Consistent, intuitive API:** Learn once, use everywhere—no surprises.
+- **Generics-first:** Type-safe and future-proof, leveraging Go's latest features.
+- **Advanced features:** Functional programming, sorting, searching, and more.
+- **Performance-focused:** Optimized for speed and memory efficiency.
+- **Comprehensive docs & tests:** Easy onboarding and reliable maintenance.
+- **Community-driven:** Open to suggestions, improvements, and contributions.
 
 ---
 
@@ -388,10 +406,10 @@ LIFO structure with a rich API, random access, capacity, equality, and functiona
 stack := stl.NewStack[int]()
 stack.Push(1)
 stack.PushAll([]int{2, 3})
-stack.Pop()
-stack.Peek()
-stack.Size()
-stack.IsEmpty()
+stack.Pop() // 3
+stack.Peek() // 2
+stack.Size() // 2
+stack.IsEmpty() // false
 stack.Clear()
 stack.GetAt(0)
 stack.SetAt(0, 10)
@@ -554,3 +572,25 @@ MIT License. See LICENSE file for details.
 - Inspired by Java Collections Framework
 - Influenced by C++ Standard Template Library
 - Built with Go's generics system
+
+---
+
+## ❓ FAQ / Troubleshooting
+
+**Q: Is Go STL production-ready?**  
+A: Yes! It is tested, benchmarked, and used in real projects. Please report any issues you find.
+
+**Q: How do I use Go STL with my own types?**  
+A: Just provide a comparator function for ordered structures (e.g., `func(a, b MyType) bool { ... }`).
+
+**Q: Why not use Go's built-in maps/slices?**  
+A: Go STL provides advanced features, consistent APIs, and data structures not available in the standard library (e.g., Set, MultiSet, TreeMap, Trie, Deque, etc.).
+
+**Q: Is it fast?**  
+A: Yes! All structures are optimized for performance and memory usage. See benchmarks in the repo.
+
+**Q: How do I contribute?**  
+A: See the Contributing section below. PRs, issues, and suggestions are welcome!
+
+**Q: Where can I ask questions?**  
+A: Use GitHub Discussions or open an issue.
