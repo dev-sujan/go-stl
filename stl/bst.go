@@ -106,15 +106,15 @@ func (bst *BST[T]) deleteRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 
 		// Node has two children
 		// Find the inorder successor (smallest value in right subtree)
-		node.Value = bst.minValue(node.Right)
+		node.Value = bst.findMinValue(node.Right)
 		node.Right = bst.deleteRecursive(node.Right, node.Value)
 	}
 
 	return node
 }
 
-// minValue finds the minimum value in a subtree
-func (bst *BST[T]) minValue(node *BSTNode[T]) T {
+// findMinValue finds the minimum value in a subtree
+func (bst *BST[T]) findMinValue(node *BSTNode[T]) T {
 	current := node
 	for current.Left != nil {
 		current = current.Left
@@ -128,7 +128,7 @@ func (bst *BST[T]) Min() (T, bool) {
 		var zero T
 		return zero, false
 	}
-	return bst.minValue(bst.Root), true
+	return bst.findMinValue(bst.Root), true
 }
 
 // Max returns the maximum value in the BST
@@ -137,11 +137,11 @@ func (bst *BST[T]) Max() (T, bool) {
 		var zero T
 		return zero, false
 	}
-	return bst.maxValue(bst.Root), true
+	return bst.findMaxValue(bst.Root), true
 }
 
-// maxValue finds the maximum value in a subtree
-func (bst *BST[T]) maxValue(node *BSTNode[T]) T {
+// findMaxValue finds the maximum value in a subtree
+func (bst *BST[T]) findMaxValue(node *BSTNode[T]) T {
 	current := node
 	for current.Right != nil {
 		current = current.Right
@@ -513,7 +513,7 @@ func (bst *BST[T]) Successor(value T) (T, bool) {
 			// Found the value
 			if current.Right != nil {
 				// Successor is the minimum value in right subtree
-				return bst.minValue(current.Right), true
+				return bst.findMinValue(current.Right), true
 			}
 			break
 		}
@@ -541,7 +541,7 @@ func (bst *BST[T]) Predecessor(value T) (T, bool) {
 			// Found the value
 			if current.Left != nil {
 				// Predecessor is the maximum value in left subtree
-				return bst.maxValue(current.Left), true
+				return bst.findMaxValue(current.Left), true
 			}
 			break
 		}

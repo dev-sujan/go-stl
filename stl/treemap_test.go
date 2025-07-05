@@ -4,6 +4,16 @@ import (
 	"testing"
 )
 
+const (
+	testValueOne   = "one"
+	testValueTwo   = "two"
+	testValueThree = "three"
+	testValueFour  = "four"
+	testValueFive  = "five"
+	testValueSeven = "seven"
+	testValueNine  = "nine"
+)
+
 func lessInt(a, b int) bool {
 	return a < b
 }
@@ -12,15 +22,15 @@ func TestTreeMapBasicOperations(t *testing.T) {
 	tm := NewTreeMap[int, string](lessInt)
 
 	// Test Put and Get
-	tm.Put(1, "one")
-	tm.Put(2, "two")
-	tm.Put(3, "three")
+	tm.Put(1, testValueOne)
+	tm.Put(2, testValueTwo)
+	tm.Put(3, testValueThree)
 
-	if val, found := tm.Get(1); !found || val != "one" {
+	if val, found := tm.Get(1); !found || val != testValueOne {
 		t.Errorf("Expected 'one' for key 1, got %v", val)
 	}
 
-	if val, found := tm.Get(2); !found || val != "two" {
+	if val, found := tm.Get(2); !found || val != testValueTwo {
 		t.Errorf("Expected 'two' for key 2, got %v", val)
 	}
 
@@ -45,9 +55,9 @@ func TestTreeMapRemove(t *testing.T) {
 	tm := NewTreeMap[int, string](lessInt)
 
 	// Setup
-	tm.Put(1, "one")
-	tm.Put(2, "two")
-	tm.Put(3, "three")
+	tm.Put(1, testValueOne)
+	tm.Put(2, testValueTwo)
+	tm.Put(3, testValueThree)
 
 	// Test removing existing key
 	if removed := tm.Remove(2); !removed {
@@ -75,9 +85,9 @@ func TestTreeMapRemove(t *testing.T) {
 
 func TestTreeMapFromMap(t *testing.T) {
 	source := map[int]string{
-		1: "one",
-		2: "two",
-		3: "three",
+		1: testValueOne,
+		2: testValueTwo,
+		3: testValueThree,
 	}
 
 	tm := NewTreeMapFromMap(source, lessInt)
@@ -98,21 +108,21 @@ func TestTreeMapRangeOperations(t *testing.T) {
 
 	// Setup
 	values := map[int]string{
-		1: "one",
-		3: "three",
-		5: "five",
-		7: "seven",
-		9: "nine",
+		1: testValueOne,
+		3: testValueThree,
+		5: testValueFive,
+		7: testValueSeven,
+		9: testValueNine,
 	}
 	for k, v := range values {
 		tm.Put(k, v)
 	}
 
 	// Test Floor
-	if k, v, found := tm.Floor(4); !found || k != 3 || v != "three" {
+	if k, v, found := tm.Floor(4); !found || k != 3 || v != testValueThree {
 		t.Errorf("Floor(4) should return (3, 'three'), got (%v, %v)", k, v)
 	}
-	if k, v, found := tm.Floor(5); !found || k != 5 || v != "five" {
+	if k, v, found := tm.Floor(5); !found || k != 5 || v != testValueFive {
 		t.Errorf("Floor(5) should return (5, 'five'), got (%v, %v)", k, v)
 	}
 	if _, _, found := tm.Floor(0); found {
@@ -120,10 +130,10 @@ func TestTreeMapRangeOperations(t *testing.T) {
 	}
 
 	// Test Ceiling
-	if k, v, found := tm.Ceiling(4); !found || k != 5 || v != "five" {
+	if k, v, found := tm.Ceiling(4); !found || k != 5 || v != testValueFive {
 		t.Errorf("Ceiling(4) should return (5, 'five'), got (%v, %v)", k, v)
 	}
-	if k, v, found := tm.Ceiling(5); !found || k != 5 || v != "five" {
+	if k, v, found := tm.Ceiling(5); !found || k != 5 || v != testValueFive {
 		t.Errorf("Ceiling(5) should return (5, 'five'), got (%v, %v)", k, v)
 	}
 	if _, _, found := tm.Ceiling(10); found {
@@ -131,7 +141,7 @@ func TestTreeMapRangeOperations(t *testing.T) {
 	}
 
 	// Test Lower
-	if k, v, found := tm.Lower(5); !found || k != 3 || v != "three" {
+	if k, v, found := tm.Lower(5); !found || k != 3 || v != testValueThree {
 		t.Errorf("Lower(5) should return (3, 'three'), got (%v, %v)", k, v)
 	}
 	if _, _, found := tm.Lower(1); found {
@@ -139,7 +149,7 @@ func TestTreeMapRangeOperations(t *testing.T) {
 	}
 
 	// Test Higher
-	if k, v, found := tm.Higher(5); !found || k != 7 || v != "seven" {
+	if k, v, found := tm.Higher(5); !found || k != 7 || v != testValueSeven {
 		t.Errorf("Higher(5) should return (7, 'seven'), got (%v, %v)", k, v)
 	}
 	if _, _, found := tm.Higher(9); found {
@@ -155,11 +165,11 @@ func TestTreeMapStatisticalOperations(t *testing.T) {
 		key   int
 		value string
 	}{
-		{1, "one"},
-		{3, "three"},
-		{5, "five"},
-		{7, "seven"},
-		{9, "nine"},
+		{1, testValueOne},
+		{3, testValueThree},
+		{5, testValueFive},
+		{7, testValueSeven},
+		{9, testValueNine},
 	}
 
 	for _, pair := range pairs {
@@ -175,10 +185,10 @@ func TestTreeMapStatisticalOperations(t *testing.T) {
 	}
 
 	// Test Select
-	if k, v, found := tm.Select(0); !found || k != 1 || v != "one" {
+	if k, v, found := tm.Select(0); !found || k != 1 || v != testValueOne {
 		t.Errorf("Select(0) should return (1, 'one'), got (%v, %v)", k, v)
 	}
-	if k, v, found := tm.Select(2); !found || k != 5 || v != "five" {
+	if k, v, found := tm.Select(2); !found || k != 5 || v != testValueFive {
 		t.Errorf("Select(2) should return (5, 'five'), got (%v, %v)", k, v)
 	}
 	if _, _, found := tm.Select(5); found {
@@ -186,10 +196,10 @@ func TestTreeMapStatisticalOperations(t *testing.T) {
 	}
 
 	// Test Min/Max
-	if k, v, found := tm.Min(); !found || k != 1 || v != "one" {
+	if k, v, found := tm.Min(); !found || k != 1 || v != testValueOne {
 		t.Errorf("Min() should return (1, 'one'), got (%v, %v)", k, v)
 	}
-	if k, v, found := tm.Max(); !found || k != 9 || v != "nine" {
+	if k, v, found := tm.Max(); !found || k != 9 || v != testValueNine {
 		t.Errorf("Max() should return (9, 'nine'), got (%v, %v)", k, v)
 	}
 }
@@ -199,9 +209,9 @@ func TestTreeMapCollectionOperations(t *testing.T) {
 
 	// Setup
 	pairs := map[int]string{
-		1: "one",
-		2: "two",
-		3: "three",
+		1: testValueOne,
+		2: testValueTwo,
+		3: testValueThree,
 	}
 	for k, v := range pairs {
 		tm.Put(k, v)
@@ -244,11 +254,11 @@ func TestTreeMapAdvancedOperations(t *testing.T) {
 
 	// Setup
 	pairs := map[int]string{
-		1: "one",
-		2: "two",
-		3: "three",
-		4: "four",
-		5: "five",
+		1: testValueOne,
+		2: testValueTwo,
+		3: testValueThree,
+		4: testValueFour,
+		5: testValueFive,
 	}
 	for k, v := range pairs {
 		tm.Put(k, v)
@@ -261,10 +271,10 @@ func TestTreeMapAdvancedOperations(t *testing.T) {
 	if evenOnly.Size() != 2 {
 		t.Errorf("Expected 2 even numbers, got %d", evenOnly.Size())
 	}
-	if val, found := evenOnly.Get(2); !found || val != "two" {
+	if val, found := evenOnly.Get(2); !found || val != testValueTwo {
 		t.Error("Filtered map should contain 2: 'two'")
 	}
-	if val, found := evenOnly.Get(4); !found || val != "four" {
+	if val, found := evenOnly.Get(4); !found || val != testValueFour {
 		t.Error("Filtered map should contain 4: 'four'")
 	}
 

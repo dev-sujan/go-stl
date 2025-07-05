@@ -39,7 +39,7 @@ linters:
     - goprintffuncname
 
     # Other
-    - gomnd
+    - mnd  # Replacing deprecated gomnd
     - nakedret
     - nolintlint
     - rowserrcheck
@@ -48,37 +48,18 @@ linters-settings:
   # Complexity checks
   gocyclo:
     min-complexity: 15
-  dupl:
-    threshold: 100
-
-  # Constants and magic numbers
+  
   goconst:
     min-len: 3
     min-occurrences: 3
-  gomnd:
-    checks:
-      - argument
-      - case
-      - condition
-      - operation
-      - return
-      - assign
-
-  # Code style and consistency
+    
   gocritic:
     enabled-tags:
       - diagnostic
-      - experimental
-      - opinionated
-      - performance
       - style
+      - performance
     disabled-checks:
-      - commentFormatting # Too strict for our needs
-      - hugeParam # Not relevant for our use case
-      - ifElseChain # We prefer explicit if-else in some cases
-      - octalLiteral # Not used in our codebase
-      - whyNoLint # We document nolint where needed
-      - wrapperFunc # Too many false positives
+      - unnamedResult  # Disable unnamed result check
 
 issues:
   # Exclude specific linters from test files and examples
