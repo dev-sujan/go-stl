@@ -71,43 +71,47 @@ jobs:
   security:
     name: Security Scan
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.22'
-
-    - name: Run gosec security scanner
-      uses: securego/gosec@v2.19.0
-      with:
-        args: '-fmt sarif -out results.sarif ./stl'
-
-    - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v2
-      if: always()
-      with:
-        sarif_file: results.sarif
-        
-  codeql:
-    name: CodeQL Analysis
-    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       security-events: write
       
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
+    - name: Set up Go
+      id: go
+      uses: actions/setup-go@v4
+      with:
+        go-version: "1.22.0"
+        check-latest: true
+
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: go
-        
+
+    - name: Run gosec security scanner
+      uses: securego/gosec@v2.19.0
+      with:
+        args: "-fmt sarif -out gosec-results.sarif ./stl"
+
+    - name: Install Nancy
+      run: go install github.com/sonatype-nexus-community/nancy@latest
+
+    - name: Check dependencies with Nancy
+      run: |
+        go list -json -m all | nancy sleuth
+
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
+
+    - name: Upload gosec results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: gosec-results.sarif
+        category: gosec
 
   benchmark:
     name: Benchmark
