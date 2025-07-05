@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        go-version: ['1.21', '1.22', '1.23']
+        go-version: ['1.21', '1.22']
 
     steps:
     - name: Checkout code
@@ -28,11 +28,17 @@ jobs:
       run: go mod download
 
     - name: Run tests
+      shell: bash
       run: |
-        go test -v -race -coverprofile=coverage.txt -covermode=atomic ./stl
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          go test -v -race -coverprofile="coverage.txt" -covermode=atomic "./stl"
+        else
+          go test -v -race -coverprofile=coverage.txt -covermode=atomic ./stl
+        fi
 
     - name: Run examples
-      run: go run examples/main.go
+      shell: bash
+      run: go run ./examples/main.go
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -52,7 +58,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.23'
+        go-version: '1.22'
 
     - name: Install golangci-lint
       uses: golangci/golangci-lint-action@v4
@@ -72,7 +78,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.23'
+        go-version: '1.22'
 
     - name: Run gosec security scanner
       uses: securego/gosec@v2.19.0
@@ -84,6 +90,24 @@ jobs:
       if: always()
       with:
         sarif_file: results.sarif
+        
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: go
+        
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
 
   benchmark:
     name: Benchmark
@@ -95,7 +119,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.23'
+        go-version: '1.22'
 
     - name: Run benchmarks
       run: go test -bench=. -benchmem ./stl
@@ -106,7 +130,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        go-version: ['1.21', '1.22', '1.23']
+        go-version: ['1.21', '1.22']
 
     steps:
     - name: Checkout code
@@ -132,3 +156,22 @@ jobs:
 
     - name: Build examples
       run: go build ./examples
+
+  dependency-check:
+    name: Dependency Scan
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.22'
+
+    - name: Install Nancy
+      run: go install github.com/sonatype-nexus-community/nancy@latest
+
+    - name: Check dependencies with Nancy
+      run: |
+        go list -json -m all | nancy sleuth
