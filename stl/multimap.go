@@ -335,8 +335,6 @@ func (mm *MultiMap[K, V]) Equals(other *MultiMap[K, V]) bool {
 	return true
 }
 
-
-
 // GetSortedKeys returns keys sorted by a custom comparator
 func (mm *MultiMap[K, V]) GetSortedKeys(less func(K, K) bool) []K {
 	keys := mm.Keys()
