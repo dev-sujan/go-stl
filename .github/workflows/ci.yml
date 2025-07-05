@@ -1,9 +1,3 @@
-ci: optimize and streamline GitHub Actions workflow
-
-Major improvements:
-  - Remove redundant build job (already covered by test job)
-  - Consolidate security scanning jobs (CodeQL, gosec, nancy)
-  - Add timeouts to all jobs for better resource management
 name: CI
 
 on:
