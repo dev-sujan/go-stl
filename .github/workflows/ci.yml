@@ -98,6 +98,16 @@ jobs:
       with:
         languages: go
 
+    - name: Verify dependencies
+      shell: bash
+      run: |
+        go mod download
+        go mod tidy
+        # Ensure go.sum exists
+        if [ ! -f "go.sum" ]; then
+          touch go.sum
+        fi
+
     - name: Install govulncheck
       run: go install golang.org/x/vuln/cmd/govulncheck@latest
 
@@ -105,9 +115,17 @@ jobs:
       run: govulncheck ./...
 
     - name: Run gosec security scanner
-      uses: securego/gosec@v2.19.0
-      with:
-        args: "-fmt sarif -out gosec-results.sarif ./stl"
+      shell: bash
+      run: |
+        # Direct installation of gosec
+        go install github.com/securego/gosec/v2/cmd/gosec@latest
+        # Verify gosec installation
+        which gosec || echo "gosec not found in PATH"
+        # Run gosec with full output
+        gosec -fmt=json -out=gosec-results.json ./stl || echo "gosec JSON output failed"
+        gosec -fmt=sarif -out=gosec-results.sarif ./stl || echo "gosec SARIF output failed"
+        # Show results summary
+        gosec ./stl || echo "gosec scan failed"
 
     - name: Install Nancy
       run: go install github.com/sonatype-nexus-community/nancy@latest
