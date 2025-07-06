@@ -1,6 +1,6 @@
 # Pull Request
 
-Thank you for contributing to Go STL!
+Thank you for contributing to Go STL, maintained by Sujan Maji ([@dev-sujan](https://github.com/dev-sujan))!
 
 ## Checklist
 - [ ] My code builds and passes all tests

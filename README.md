@@ -13,7 +13,11 @@ A comprehensive, robust, and user-friendly implementation of essential data stru
 
 ---
 
-## 💬 Community & Support
+## � Ownership & Maintenance
+
+This project is owned and maintained by [Sujan Maji](https://github.com/dev-sujan).
+
+## �💬 Community & Support
 
 - [Open an issue](https://github.com/dev-sujan/go-stl/issues)
 - [Discussions](https://github.com/dev-sujan/go-stl/discussions)
