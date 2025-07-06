@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 0 * * 0'  # Run weekly on Sundays
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   govulncheck:
     name: Vulnerability Check
@@ -21,8 +25,26 @@ jobs:
           go-version: '1.24'
           check-latest: true
 
+      - name: Verify dependencies
+        shell: bash
+        run: |
+          go mod download
+          go mod tidy
+
       - name: Install govulncheck
         run: go install golang.org/x/vuln/cmd/govulncheck@latest
 
       - name: Run govulncheck
         run: govulncheck ./...
+        
+      - name: Run gosec security scanner
+        uses: securego/gosec@v2.19.0
+        with:
+          args: "-fmt sarif -out gosec-results.sarif ./stl"
+          
+      - name: Upload gosec results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: gosec-results.sarif
+          category: gosec

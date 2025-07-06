@@ -32,8 +32,11 @@ jobs:
         go-version: ${{ matrix.go-version }}
         cache: true
 
-    - name: Install dependencies
-      run: go mod download
+    - name: Verify dependencies
+      shell: bash
+      run: |
+        go mod download
+        go mod tidy
 
     - name: Run tests
       shell: bash
