@@ -4,13 +4,13 @@ import (
 	"fmt"
 )
 
-// Graph represents a graph using adjacency list representation
+// Graph represents a graph using adjacency list representation.
 type Graph[T comparable] struct {
 	adjacency map[T][]T
 	directed  bool
 }
 
-// NewGraph creates a new empty graph
+// NewGraph creates a new empty graph.
 func NewGraph[T comparable](directed bool) *Graph[T] {
 	return &Graph[T]{
 		adjacency: make(map[T][]T),
@@ -18,7 +18,7 @@ func NewGraph[T comparable](directed bool) *Graph[T] {
 	}
 }
 
-// NewGraphFromEdges creates a graph from a slice of edges
+// NewGraphFromEdges creates a graph from a slice of edges.
 func NewGraphFromEdges[T comparable](edges [][2]T, directed bool) *Graph[T] {
 	graph := NewGraph[T](directed)
 	for _, edge := range edges {
@@ -27,14 +27,14 @@ func NewGraphFromEdges[T comparable](edges [][2]T, directed bool) *Graph[T] {
 	return graph
 }
 
-// AddNode adds a node to the graph
+// AddNode adds a node to the graph.
 func (g *Graph[T]) AddNode(node T) {
 	if _, exists := g.adjacency[node]; !exists {
 		g.adjacency[node] = []T{}
 	}
 }
 
-// AddEdge adds an edge between two nodes
+// AddEdge adds an edge between two nodes.
 func (g *Graph[T]) AddEdge(from, to T) {
 	g.AddNode(from)
 	g.AddNode(to)
@@ -46,7 +46,7 @@ func (g *Graph[T]) AddEdge(from, to T) {
 	}
 }
 
-// RemoveNode removes a node and all its edges from the graph
+// RemoveNode removes a node and all its edges from the graph.
 func (g *Graph[T]) RemoveNode(node T) {
 	// Remove all edges to this node
 	for from := range g.adjacency {
@@ -57,7 +57,7 @@ func (g *Graph[T]) RemoveNode(node T) {
 	delete(g.adjacency, node)
 }
 
-// RemoveEdge removes an edge between two nodes
+// RemoveEdge removes an edge between two nodes.
 func (g *Graph[T]) RemoveEdge(from, to T) {
 	if neighbors, exists := g.adjacency[from]; exists {
 		for i, neighbor := range neighbors {
@@ -80,13 +80,13 @@ func (g *Graph[T]) RemoveEdge(from, to T) {
 	}
 }
 
-// HasNode checks if a node exists in the graph
+// HasNode checks if a node exists in the graph.
 func (g *Graph[T]) HasNode(node T) bool {
 	_, exists := g.adjacency[node]
 	return exists
 }
 
-// HasEdge checks if an edge exists between two nodes
+// HasEdge checks if an edge exists between two nodes.
 func (g *Graph[T]) HasEdge(from, to T) bool {
 	if neighbors, exists := g.adjacency[from]; exists {
 		for _, neighbor := range neighbors {
@@ -98,7 +98,7 @@ func (g *Graph[T]) HasEdge(from, to T) bool {
 	return false
 }
 
-// GetNeighbors returns all neighbors of a node
+// GetNeighbors returns all neighbors of a node.
 func (g *Graph[T]) GetNeighbors(node T) []T {
 	if neighbors, exists := g.adjacency[node]; exists {
 		result := make([]T, len(neighbors))
@@ -108,7 +108,7 @@ func (g *Graph[T]) GetNeighbors(node T) []T {
 	return []T{}
 }
 
-// GetNodes returns all nodes in the graph
+// GetNodes returns all nodes in the graph.
 func (g *Graph[T]) GetNodes() []T {
 	nodes := make([]T, 0, len(g.adjacency))
 	for node := range g.adjacency {
@@ -117,7 +117,7 @@ func (g *Graph[T]) GetNodes() []T {
 	return nodes
 }
 
-// GetEdges returns all edges in the graph
+// GetEdges returns all edges in the graph.
 func (g *Graph[T]) GetEdges() [][2]T {
 	var edges [][2]T
 	visited := make(map[string]bool)
@@ -145,12 +145,12 @@ func (g *Graph[T]) GetEdges() [][2]T {
 	return edges
 }
 
-// NodeCount returns the number of nodes in the graph
+// NodeCount returns the number of nodes in the graph.
 func (g *Graph[T]) NodeCount() int {
 	return len(g.adjacency)
 }
 
-// EdgeCount returns the number of edges in the graph
+// EdgeCount returns the number of edges in the graph.
 func (g *Graph[T]) EdgeCount() int {
 	total := 0
 	for _, neighbors := range g.adjacency {
@@ -164,22 +164,22 @@ func (g *Graph[T]) EdgeCount() int {
 	return total
 }
 
-// IsEmpty checks if the graph is empty
+// IsEmpty checks if the graph is empty.
 func (g *Graph[T]) IsEmpty() bool {
 	return len(g.adjacency) == 0
 }
 
-// Clear removes all nodes and edges from the graph
+// Clear removes all nodes and edges from the graph.
 func (g *Graph[T]) Clear() {
 	g.adjacency = make(map[T][]T)
 }
 
-// IsDirected checks if the graph is directed
+// IsDirected checks if the graph is directed.
 func (g *Graph[T]) IsDirected() bool {
 	return g.directed
 }
 
-// Degree returns the degree of a node (number of edges)
+// Degree returns the degree of a node (number of edges).
 func (g *Graph[T]) Degree(node T) int {
 	if neighbors, exists := g.adjacency[node]; exists {
 		return len(neighbors)
@@ -187,7 +187,7 @@ func (g *Graph[T]) Degree(node T) int {
 	return 0
 }
 
-// InDegree returns the in-degree of a node (for directed graphs)
+// InDegree returns the in-degree of a node (for directed graphs).
 func (g *Graph[T]) InDegree(node T) int {
 	if !g.directed {
 		return g.Degree(node)
@@ -204,12 +204,12 @@ func (g *Graph[T]) InDegree(node T) int {
 	return count
 }
 
-// OutDegree returns the out-degree of a node (for directed graphs)
+// OutDegree returns the out-degree of a node (for directed graphs).
 func (g *Graph[T]) OutDegree(node T) int {
 	return g.Degree(node)
 }
 
-// BFS performs breadth-first search starting from the given node
+// BFS performs breadth-first search starting from the given node.
 func (g *Graph[T]) BFS(start T) []T {
 	var result []T
 	visited := make(map[T]bool)
@@ -232,7 +232,7 @@ func (g *Graph[T]) BFS(start T) []T {
 	return result
 }
 
-// DFS performs depth-first search starting from the given node
+// DFS performs depth-first search starting from the given node.
 func (g *Graph[T]) DFS(start T) []T {
 	var result []T
 	visited := make(map[T]bool)
@@ -240,7 +240,7 @@ func (g *Graph[T]) DFS(start T) []T {
 	return result
 }
 
-// dfsRecursive is the recursive helper for DFS
+// dfsRecursive is the recursive helper for DFS.
 func (g *Graph[T]) dfsRecursive(node T, visited map[T]bool, result *[]T) {
 	visited[node] = true
 	*result = append(*result, node)
@@ -252,7 +252,7 @@ func (g *Graph[T]) dfsRecursive(node T, visited map[T]bool, result *[]T) {
 	}
 }
 
-// DFSIterative performs iterative depth-first search
+// DFSIterative performs iterative depth-first search.
 func (g *Graph[T]) DFSIterative(start T) []T {
 	var result []T
 	visited := make(map[T]bool)
@@ -279,7 +279,7 @@ func (g *Graph[T]) DFSIterative(start T) []T {
 	return result
 }
 
-// ConnectedComponents returns all connected components in the graph
+// ConnectedComponents returns all connected components in the graph.
 func (g *Graph[T]) ConnectedComponents() [][]T {
 	var components [][]T
 	visited := make(map[T]bool)
@@ -295,7 +295,7 @@ func (g *Graph[T]) ConnectedComponents() [][]T {
 	return components
 }
 
-// IsConnected checks if the graph is connected
+// IsConnected checks if the graph is connected.
 func (g *Graph[T]) IsConnected() bool {
 	if g.IsEmpty() {
 		return true
@@ -305,7 +305,7 @@ func (g *Graph[T]) IsConnected() bool {
 	return len(components) == 1
 }
 
-// ShortestPath finds the shortest path between two nodes using BFS
+// ShortestPath finds the shortest path between two nodes using BFS.
 func (g *Graph[T]) ShortestPath(start, end T) ([]T, bool) {
 	if !g.HasNode(start) || !g.HasNode(end) {
 		return nil, false
@@ -344,7 +344,7 @@ func (g *Graph[T]) ShortestPath(start, end T) ([]T, bool) {
 	return nil, false
 }
 
-// AllPaths finds all paths between two nodes
+// AllPaths finds all paths between two nodes.
 func (g *Graph[T]) AllPaths(start, end T) [][]T {
 	var paths [][]T
 	visited := make(map[T]bool)
@@ -352,7 +352,7 @@ func (g *Graph[T]) AllPaths(start, end T) [][]T {
 	return paths
 }
 
-// findAllPaths is the recursive helper for AllPaths
+// findAllPaths is the recursive helper for AllPaths.
 func (g *Graph[T]) findAllPaths(current, end T, visited map[T]bool, path []T, paths *[][]T) {
 	if current == end {
 		pathCopy := make([]T, len(path))
@@ -372,7 +372,7 @@ func (g *Graph[T]) findAllPaths(current, end T, visited map[T]bool, path []T, pa
 	visited[current] = false
 }
 
-// HasCycle checks if the graph has a cycle
+// HasCycle checks if the graph has a cycle.
 func (g *Graph[T]) HasCycle() bool {
 	visited := make(map[T]bool)
 	recStack := make(map[T]bool)
@@ -388,7 +388,7 @@ func (g *Graph[T]) HasCycle() bool {
 	return false
 }
 
-// hasCycleDFS is the recursive helper for HasCycle
+// hasCycleDFS is the recursive helper for HasCycle.
 func (g *Graph[T]) hasCycleDFS(node T, visited, recStack map[T]bool) bool {
 	visited[node] = true
 	recStack[node] = true
@@ -407,7 +407,7 @@ func (g *Graph[T]) hasCycleDFS(node T, visited, recStack map[T]bool) bool {
 	return false
 }
 
-// TopologicalSort performs topological sorting (for DAGs)
+// TopologicalSort performs topological sorting (for DAGs).
 func (g *Graph[T]) TopologicalSort() ([]T, bool) {
 	if !g.directed {
 		return nil, false
@@ -434,7 +434,7 @@ func (g *Graph[T]) TopologicalSort() ([]T, bool) {
 	return result, true
 }
 
-// topologicalSortDFS is the recursive helper for TopologicalSort
+// topologicalSortDFS is the recursive helper for TopologicalSort.
 func (g *Graph[T]) topologicalSortDFS(node T, visited map[T]bool, result *[]T) {
 	visited[node] = true
 
@@ -447,7 +447,7 @@ func (g *Graph[T]) topologicalSortDFS(node T, visited map[T]bool, result *[]T) {
 	*result = append(*result, node)
 }
 
-// IsBipartite checks if the graph is bipartite
+// IsBipartite checks if the graph is bipartite.
 func (g *Graph[T]) IsBipartite() bool {
 	if g.IsEmpty() {
 		return true
@@ -466,7 +466,7 @@ func (g *Graph[T]) IsBipartite() bool {
 	return true
 }
 
-// isBipartiteBFS is the BFS helper for IsBipartite
+// isBipartiteBFS is the BFS helper for IsBipartite.
 func (g *Graph[T]) isBipartiteBFS(start T, color map[T]int) bool {
 	queue := []T{start}
 	color[start] = 1
@@ -488,7 +488,7 @@ func (g *Graph[T]) isBipartiteBFS(start T, color map[T]int) bool {
 	return true
 }
 
-// Clone creates a deep copy of the graph
+// Clone creates a deep copy of the graph.
 func (g *Graph[T]) Clone() *Graph[T] {
 	result := NewGraph[T](g.directed)
 
@@ -500,7 +500,7 @@ func (g *Graph[T]) Clone() *Graph[T] {
 	return result
 }
 
-// Equals checks if two graphs are equal
+// Equals checks if two graphs are equal.
 func (g *Graph[T]) Equals(other *Graph[T]) bool {
 	if g.directed != other.directed {
 		return false
@@ -528,19 +528,19 @@ func (g *Graph[T]) Equals(other *Graph[T]) bool {
 	return true
 }
 
-// String returns a string representation of the graph
+// String returns a string representation of the graph.
 func (g *Graph[T]) String() string {
 	return fmt.Sprintf("Graph{Directed: %v, Nodes: %d, Edges: %d}", g.directed, g.NodeCount(), g.EdgeCount())
 }
 
-// ForEachNode applies a function to each node in the graph
+// ForEachNode applies a function to each node in the graph.
 func (g *Graph[T]) ForEachNode(fn func(T)) {
 	for node := range g.adjacency {
 		fn(node)
 	}
 }
 
-// ForEachEdge applies a function to each edge in the graph
+// ForEachEdge applies a function to each edge in the graph.
 func (g *Graph[T]) ForEachEdge(fn func(T, T)) {
 	visited := make(map[string]bool)
 
@@ -565,7 +565,7 @@ func (g *Graph[T]) ForEachEdge(fn func(T, T)) {
 	}
 }
 
-// FilterNodes returns a new graph containing only nodes that satisfy the predicate
+// FilterNodes returns a new graph containing only nodes that satisfy the predicate.
 func (g *Graph[T]) FilterNodes(predicate func(T) bool) *Graph[T] {
 	result := NewGraph[T](g.directed)
 
@@ -588,7 +588,7 @@ func (g *Graph[T]) FilterNodes(predicate func(T) bool) *Graph[T] {
 	return result
 }
 
-// Subgraph returns a subgraph containing only the specified nodes
+// Subgraph returns a subgraph containing only the specified nodes.
 func (g *Graph[T]) Subgraph(nodes []T) *Graph[T] {
 	nodeSet := NewSetFromSlice(nodes)
 	return g.FilterNodes(func(node T) bool {
@@ -596,7 +596,7 @@ func (g *Graph[T]) Subgraph(nodes []T) *Graph[T] {
 	})
 }
 
-// Complement returns the complement of the graph
+// Complement returns the complement of the graph.
 func (g *Graph[T]) Complement() *Graph[T] {
 	result := NewGraph[T](g.directed)
 
@@ -617,7 +617,7 @@ func (g *Graph[T]) Complement() *Graph[T] {
 	return result
 }
 
-// Union returns the union of two graphs
+// Union returns the union of two graphs.
 func (g *Graph[T]) Union(other *Graph[T]) *Graph[T] {
 	if g.directed != other.directed {
 		return nil
@@ -636,7 +636,7 @@ func (g *Graph[T]) Union(other *Graph[T]) *Graph[T] {
 	return result
 }
 
-// Intersection returns the intersection of two graphs
+// Intersection returns the intersection of two graphs.
 func (g *Graph[T]) Intersection(other *Graph[T]) *Graph[T] {
 	if g.directed != other.directed {
 		return nil
@@ -659,8 +659,7 @@ func (g *Graph[T]) Intersection(other *Graph[T]) *Graph[T] {
 	return result
 }
 
-// PrimMST returns the edges of the Minimum Spanning Tree using Prim's algorithm (for weighted graphs)
-// For unweighted graphs, it returns a spanning tree (not minimum)
+// For unweighted graphs, it returns a spanning tree (not minimum).
 func (g *Graph[T]) PrimMST(start T) [][2]T {
 	visited := make(map[T]bool)
 	var mst [][2]T
@@ -683,7 +682,7 @@ func (g *Graph[T]) PrimMST(start T) [][2]T {
 	return mst
 }
 
-// Filter returns a slice of nodes that satisfy the predicate, along with their degree
+// Filter returns a slice of nodes that satisfy the predicate, along with their degree.
 func (g *Graph[T]) Filter(predicate func(node T, degree int) bool) []T {
 	var result []T
 	for node := range g.adjacency {

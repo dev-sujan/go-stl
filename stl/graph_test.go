@@ -151,12 +151,12 @@ func TestGraphRemoveEdge(t *testing.T) {
 	}
 }
 
-// TestGraphBFS is skipped as the method is not implemented
+// TestGraphBFS is skipped as the method is not implemented.
 func TestGraphBFS(t *testing.T) {
 	t.Skip("BFS method not implemented yet")
 }
 
-// TestGraphDFS is skipped as the method is not implemented
+// TestGraphDFS is skipped as the method is not implemented.
 func TestGraphDFS(t *testing.T) {
 	t.Skip("DFS method not implemented yet")
 }
@@ -180,7 +180,7 @@ func TestGraphClear(t *testing.T) {
 	}
 }
 
-// Helper function for tests
+// Helper function for tests.
 func containsNode[T comparable](nodes []T, target T) bool {
 	for _, node := range nodes {
 		if node == target {

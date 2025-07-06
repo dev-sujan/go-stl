@@ -5,19 +5,19 @@ import (
 	"sort"
 )
 
-// MultiSet represents a collection that allows duplicate elements with count tracking
+// MultiSet represents a collection that allows duplicate elements with count tracking.
 type MultiSet[T comparable] struct {
 	data map[T]int
 }
 
-// NewMultiSet creates a new empty multiset
+// NewMultiSet creates a new empty multiset.
 func NewMultiSet[T comparable]() *MultiSet[T] {
 	return &MultiSet[T]{
 		data: make(map[T]int),
 	}
 }
 
-// NewMultiSetFromSlice creates a multiset from a slice
+// NewMultiSetFromSlice creates a multiset from a slice.
 func NewMultiSetFromSlice[T comparable](slice []T) *MultiSet[T] {
 	ms := NewMultiSet[T]()
 	for _, item := range slice {
@@ -26,19 +26,19 @@ func NewMultiSetFromSlice[T comparable](slice []T) *MultiSet[T] {
 	return ms
 }
 
-// Add adds an element to the multiset
+// Add adds an element to the multiset.
 func (ms *MultiSet[T]) Add(element T) {
 	ms.data[element]++
 }
 
-// AddCount adds multiple occurrences of an element
+// AddCount adds multiple occurrences of an element.
 func (ms *MultiSet[T]) AddCount(element T, count int) {
 	if count > 0 {
 		ms.data[element] += count
 	}
 }
 
-// Remove removes one occurrence of an element
+// Remove removes one occurrence of an element.
 func (ms *MultiSet[T]) Remove(element T) bool {
 	if count, exists := ms.data[element]; exists {
 		if count == 1 {
@@ -51,7 +51,7 @@ func (ms *MultiSet[T]) Remove(element T) bool {
 	return false
 }
 
-// RemoveAll removes all occurrences of an element
+// RemoveAll removes all occurrences of an element.
 func (ms *MultiSet[T]) RemoveAll(element T) bool {
 	if _, exists := ms.data[element]; exists {
 		delete(ms.data, element)
@@ -60,7 +60,7 @@ func (ms *MultiSet[T]) RemoveAll(element T) bool {
 	return false
 }
 
-// RemoveCount removes a specific number of occurrences of an element
+// RemoveCount removes a specific number of occurrences of an element.
 func (ms *MultiSet[T]) RemoveCount(element T, count int) bool {
 	if currentCount, exists := ms.data[element]; exists {
 		if count >= currentCount {
@@ -73,18 +73,18 @@ func (ms *MultiSet[T]) RemoveCount(element T, count int) bool {
 	return false
 }
 
-// Count returns the number of occurrences of an element
+// Count returns the number of occurrences of an element.
 func (ms *MultiSet[T]) Count(element T) int {
 	return ms.data[element]
 }
 
-// Contains checks if an element exists in the multiset
+// Contains checks if an element exists in the multiset.
 func (ms *MultiSet[T]) Contains(element T) bool {
 	_, exists := ms.data[element]
 	return exists
 }
 
-// Size returns the total number of elements (including duplicates)
+// Size returns the total number of elements (including duplicates).
 func (ms *MultiSet[T]) Size() int {
 	total := 0
 	for _, count := range ms.data {
@@ -93,22 +93,22 @@ func (ms *MultiSet[T]) Size() int {
 	return total
 }
 
-// UniqueSize returns the number of unique elements
+// UniqueSize returns the number of unique elements.
 func (ms *MultiSet[T]) UniqueSize() int {
 	return len(ms.data)
 }
 
-// IsEmpty checks if the multiset is empty
+// IsEmpty checks if the multiset is empty.
 func (ms *MultiSet[T]) IsEmpty() bool {
 	return len(ms.data) == 0
 }
 
-// Clear removes all elements from the multiset
+// Clear removes all elements from the multiset.
 func (ms *MultiSet[T]) Clear() {
 	ms.data = make(map[T]int)
 }
 
-// ToSlice converts the multiset to a slice (with duplicates)
+// ToSlice converts the multiset to a slice (with duplicates).
 func (ms *MultiSet[T]) ToSlice() []T {
 	result := make([]T, 0, ms.Size())
 	for element, count := range ms.data {
@@ -119,7 +119,7 @@ func (ms *MultiSet[T]) ToSlice() []T {
 	return result
 }
 
-// ToUniqueSlice converts the multiset to a slice of unique elements
+// ToUniqueSlice converts the multiset to a slice of unique elements.
 func (ms *MultiSet[T]) ToUniqueSlice() []T {
 	result := make([]T, 0, len(ms.data))
 	for element := range ms.data {
@@ -128,7 +128,7 @@ func (ms *MultiSet[T]) ToUniqueSlice() []T {
 	return result
 }
 
-// ToCountMap returns a map of elements to their counts
+// ToCountMap returns a map of elements to their counts.
 func (ms *MultiSet[T]) ToCountMap() map[T]int {
 	result := make(map[T]int)
 	for element, count := range ms.data {
@@ -137,7 +137,7 @@ func (ms *MultiSet[T]) ToCountMap() map[T]int {
 	return result
 }
 
-// Union returns a new multiset containing elements from both multisets
+// Union returns a new multiset containing elements from both multisets.
 func (ms *MultiSet[T]) Union(other *MultiSet[T]) *MultiSet[T] {
 	result := NewMultiSet[T]()
 
@@ -154,7 +154,7 @@ func (ms *MultiSet[T]) Union(other *MultiSet[T]) *MultiSet[T] {
 	return result
 }
 
-// Intersection returns a new multiset containing elements present in both multisets
+// Intersection returns a new multiset containing elements present in both multisets.
 func (ms *MultiSet[T]) Intersection(other *MultiSet[T]) *MultiSet[T] {
 	result := NewMultiSet[T]()
 
@@ -171,7 +171,7 @@ func (ms *MultiSet[T]) Intersection(other *MultiSet[T]) *MultiSet[T] {
 	return result
 }
 
-// Difference returns a new multiset containing elements in ms but not in other
+// Difference returns a new multiset containing elements in ms but not in other.
 func (ms *MultiSet[T]) Difference(other *MultiSet[T]) *MultiSet[T] {
 	result := NewMultiSet[T]()
 
@@ -185,7 +185,7 @@ func (ms *MultiSet[T]) Difference(other *MultiSet[T]) *MultiSet[T] {
 	return result
 }
 
-// IsSubset checks if ms is a subset of other
+// IsSubset checks if ms is a subset of other.
 func (ms *MultiSet[T]) IsSubset(other *MultiSet[T]) bool {
 	for element, count := range ms.data {
 		if other.Count(element) < count {
@@ -195,12 +195,12 @@ func (ms *MultiSet[T]) IsSubset(other *MultiSet[T]) bool {
 	return true
 }
 
-// IsSuperset checks if ms is a superset of other
+// IsSuperset checks if ms is a superset of other.
 func (ms *MultiSet[T]) IsSuperset(other *MultiSet[T]) bool {
 	return other.IsSubset(ms)
 }
 
-// Equals checks if two multisets contain the same elements with the same counts
+// Equals checks if two multisets contain the same elements with the same counts.
 func (ms *MultiSet[T]) Equals(other *MultiSet[T]) bool {
 	if len(ms.data) != len(other.data) {
 		return false
@@ -215,7 +215,7 @@ func (ms *MultiSet[T]) Equals(other *MultiSet[T]) bool {
 	return true
 }
 
-// Clone creates a deep copy of the multiset
+// Clone creates a deep copy of the multiset.
 func (ms *MultiSet[T]) Clone() *MultiSet[T] {
 	result := NewMultiSet[T]()
 	for element, count := range ms.data {
@@ -224,12 +224,12 @@ func (ms *MultiSet[T]) Clone() *MultiSet[T] {
 	return result
 }
 
-// String returns a string representation of the multiset
+// String returns a string representation of the multiset.
 func (ms *MultiSet[T]) String() string {
 	return fmt.Sprintf("MultiSet%v", ms.ToCountMap())
 }
 
-// ForEach applies a function to each element in the multiset (including duplicates)
+// ForEach applies a function to each element in the multiset (including duplicates).
 func (ms *MultiSet[T]) ForEach(fn func(T)) {
 	for element, count := range ms.data {
 		for i := 0; i < count; i++ {
@@ -238,14 +238,14 @@ func (ms *MultiSet[T]) ForEach(fn func(T)) {
 	}
 }
 
-// ForEachUnique applies a function to each unique element in the multiset
+// ForEachUnique applies a function to each unique element in the multiset.
 func (ms *MultiSet[T]) ForEachUnique(fn func(T, int)) {
 	for element, count := range ms.data {
 		fn(element, count)
 	}
 }
 
-// Filter returns a new multiset containing elements that satisfy the predicate
+// Filter returns a new multiset containing elements that satisfy the predicate.
 func (ms *MultiSet[T]) Filter(predicate func(T) bool) *MultiSet[T] {
 	result := NewMultiSet[T]()
 	for element, count := range ms.data {
@@ -267,7 +267,7 @@ func (ms *MultiSet[T]) mostOrLeastCommon(n int, least bool) []T {
 		element T
 		count   int
 	}
-	var elements []elementCount
+	elements := make([]elementCount, 0, len(ms.data))
 	for element, count := range ms.data {
 		elements = append(elements, elementCount{element, count})
 	}

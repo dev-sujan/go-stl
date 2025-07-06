@@ -5,21 +5,21 @@ import (
 	"math"
 )
 
-// BSTNode represents a node in a binary search tree
+// BSTNode represents a node in a binary search tree.
 type BSTNode[T comparable] struct {
 	Value T
 	Left  *BSTNode[T]
 	Right *BSTNode[T]
 }
 
-// BST represents a binary search tree
+// BST represents a binary search tree.
 type BST[T comparable] struct {
 	Root *BSTNode[T]
+	Less func(T, T) bool
 	Size int
-	Less func(T, T) bool // Comparator function
 }
 
-// NewBST creates a new empty binary search tree with a comparator function
+// NewBST creates a new empty binary search tree with a comparator function.
 func NewBST[T comparable](less func(T, T) bool) *BST[T] {
 	return &BST[T]{
 		Root: nil,
@@ -28,7 +28,7 @@ func NewBST[T comparable](less func(T, T) bool) *BST[T] {
 	}
 }
 
-// NewBSTFromSlice creates a BST from a slice
+// NewBSTFromSlice creates a BST from a slice.
 func NewBSTFromSlice[T comparable](slice []T, less func(T, T) bool) *BST[T] {
 	bst := NewBST[T](less)
 	for _, item := range slice {
@@ -37,12 +37,12 @@ func NewBSTFromSlice[T comparable](slice []T, less func(T, T) bool) *BST[T] {
 	return bst
 }
 
-// Insert adds a value to the BST
+// Insert adds a value to the BST.
 func (bst *BST[T]) Insert(value T) {
 	bst.Root = bst.insertRecursive(bst.Root, value)
 }
 
-// insertRecursive is the recursive helper for Insert
+// insertRecursive is the recursive helper for Insert.
 func (bst *BST[T]) insertRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	if node == nil {
 		bst.Size++
@@ -59,12 +59,12 @@ func (bst *BST[T]) insertRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	return node
 }
 
-// Search checks if a value exists in the BST
+// Search checks if a value exists in the BST.
 func (bst *BST[T]) Search(value T) bool {
 	return bst.searchRecursive(bst.Root, value) != nil
 }
 
-// searchRecursive is the recursive helper for Search
+// searchRecursive is the recursive helper for Search.
 func (bst *BST[T]) searchRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	if node == nil || node.Value == value {
 		return node
@@ -76,7 +76,7 @@ func (bst *BST[T]) searchRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	return bst.searchRecursive(node.Right, value)
 }
 
-// Delete removes a value from the BST
+// Delete removes a value from the BST.
 func (bst *BST[T]) Delete(value T) bool {
 	if bst.Search(value) {
 		bst.Root = bst.deleteRecursive(bst.Root, value)
@@ -86,34 +86,36 @@ func (bst *BST[T]) Delete(value T) bool {
 	return false
 }
 
-// deleteRecursive is the recursive helper for Delete
+// deleteRecursive is the recursive helper for Delete.
 func (bst *BST[T]) deleteRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	if node == nil {
 		return nil
 	}
 
-	if bst.Less(value, node.Value) {
+	switch {
+	case bst.Less(value, node.Value):
 		node.Left = bst.deleteRecursive(node.Left, value)
-	} else if bst.Less(node.Value, value) {
+	case bst.Less(node.Value, value):
 		node.Right = bst.deleteRecursive(node.Right, value)
-	} else {
+	default:
 		// Node to delete found
-		if node.Left == nil {
+		switch {
+		case node.Left == nil:
 			return node.Right
-		} else if node.Right == nil {
+		case node.Right == nil:
 			return node.Left
+		default:
+			// Node has two children
+			// Find the inorder successor (smallest value in right subtree)
+			node.Value = bst.findMinValue(node.Right)
+			node.Right = bst.deleteRecursive(node.Right, node.Value)
 		}
-
-		// Node has two children
-		// Find the inorder successor (smallest value in right subtree)
-		node.Value = bst.findMinValue(node.Right)
-		node.Right = bst.deleteRecursive(node.Right, node.Value)
 	}
 
 	return node
 }
 
-// findMinValue finds the minimum value in a subtree
+// findMinValue finds the minimum value in a subtree.
 func (bst *BST[T]) findMinValue(node *BSTNode[T]) T {
 	current := node
 	for current.Left != nil {
@@ -122,7 +124,7 @@ func (bst *BST[T]) findMinValue(node *BSTNode[T]) T {
 	return current.Value
 }
 
-// Min returns the minimum value in the BST
+// Min returns the minimum value in the BST.
 func (bst *BST[T]) Min() (T, bool) {
 	if bst.IsEmpty() {
 		var zero T
@@ -131,7 +133,7 @@ func (bst *BST[T]) Min() (T, bool) {
 	return bst.findMinValue(bst.Root), true
 }
 
-// Max returns the maximum value in the BST
+// Max returns the maximum value in the BST.
 func (bst *BST[T]) Max() (T, bool) {
 	if bst.IsEmpty() {
 		var zero T
@@ -140,7 +142,7 @@ func (bst *BST[T]) Max() (T, bool) {
 	return bst.findMaxValue(bst.Root), true
 }
 
-// findMaxValue finds the maximum value in a subtree
+// findMaxValue finds the maximum value in a subtree.
 func (bst *BST[T]) findMaxValue(node *BSTNode[T]) T {
 	current := node
 	for current.Right != nil {
@@ -149,7 +151,7 @@ func (bst *BST[T]) findMaxValue(node *BSTNode[T]) T {
 	return current.Value
 }
 
-// Floor returns the largest value less than or equal to the given value
+// Floor returns the largest value less than or equal to the given value.
 func (bst *BST[T]) Floor(value T) (T, bool) {
 	result := bst.floorRecursive(bst.Root, value)
 	if result == nil {
@@ -159,7 +161,7 @@ func (bst *BST[T]) Floor(value T) (T, bool) {
 	return result.Value, true
 }
 
-// floorRecursive is the recursive helper for Floor
+// floorRecursive is the recursive helper for Floor.
 func (bst *BST[T]) floorRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	if node == nil {
 		return nil
@@ -181,7 +183,7 @@ func (bst *BST[T]) floorRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	return node
 }
 
-// Ceiling returns the smallest value greater than or equal to the given value
+// Ceiling returns the smallest value greater than or equal to the given value.
 func (bst *BST[T]) Ceiling(value T) (T, bool) {
 	result := bst.ceilingRecursive(bst.Root, value)
 	if result == nil {
@@ -191,7 +193,7 @@ func (bst *BST[T]) Ceiling(value T) (T, bool) {
 	return result.Value, true
 }
 
-// ceilingRecursive is the recursive helper for Ceiling
+// ceilingRecursive is the recursive helper for Ceiling.
 func (bst *BST[T]) ceilingRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	if node == nil {
 		return nil
@@ -213,27 +215,28 @@ func (bst *BST[T]) ceilingRecursive(node *BSTNode[T], value T) *BSTNode[T] {
 	return node
 }
 
-// Rank returns the number of values less than the given value
+// Rank returns the number of values less than the given value.
 func (bst *BST[T]) Rank(value T) int {
 	return bst.rankRecursive(bst.Root, value)
 }
 
-// rankRecursive is the recursive helper for Rank
+// rankRecursive is the recursive helper for Rank.
 func (bst *BST[T]) rankRecursive(node *BSTNode[T], value T) int {
 	if node == nil {
 		return 0
 	}
 
-	if bst.Less(value, node.Value) {
+	switch {
+	case bst.Less(value, node.Value):
 		return bst.rankRecursive(node.Left, value)
-	} else if bst.Less(node.Value, value) {
+	case bst.Less(node.Value, value):
 		return 1 + bst.sizeOf(node.Left) + bst.rankRecursive(node.Right, value)
-	} else {
+	default:
 		return bst.sizeOf(node.Left)
 	}
 }
 
-// Select returns the value with the given rank
+// Select returns the value with the given rank.
 func (bst *BST[T]) Select(rank int) (T, bool) {
 	if rank < 0 || rank >= bst.Size {
 		var zero T
@@ -243,23 +246,24 @@ func (bst *BST[T]) Select(rank int) (T, bool) {
 	return result.Value, true
 }
 
-// selectRecursive is the recursive helper for Select
+// selectRecursive is the recursive helper for Select.
 func (bst *BST[T]) selectRecursive(node *BSTNode[T], rank int) *BSTNode[T] {
 	if node == nil {
 		return nil
 	}
 
 	leftSize := bst.sizeOf(node.Left)
-	if rank < leftSize {
+	switch {
+	case rank < leftSize:
 		return bst.selectRecursive(node.Left, rank)
-	} else if rank > leftSize {
+	case rank > leftSize:
 		return bst.selectRecursive(node.Right, rank-leftSize-1)
-	} else {
+	default:
 		return node
 	}
 }
 
-// sizeOf returns the size of a subtree
+// sizeOf returns the size of a subtree.
 func (bst *BST[T]) sizeOf(node *BSTNode[T]) int {
 	if node == nil {
 		return 0
@@ -267,23 +271,23 @@ func (bst *BST[T]) sizeOf(node *BSTNode[T]) int {
 	return 1 + bst.sizeOf(node.Left) + bst.sizeOf(node.Right)
 }
 
-// IsEmpty checks if the BST is empty
+// IsEmpty checks if the BST is empty.
 func (bst *BST[T]) IsEmpty() bool {
 	return bst.Size == 0
 }
 
-// Clear removes all elements from the BST
+// Clear removes all elements from the BST.
 func (bst *BST[T]) Clear() {
 	bst.Root = nil
 	bst.Size = 0
 }
 
-// Height returns the height of the BST
+// Height returns the height of the BST.
 func (bst *BST[T]) Height() int {
 	return bst.heightRecursive(bst.Root)
 }
 
-// heightRecursive is the recursive helper for Height
+// heightRecursive is the recursive helper for Height.
 func (bst *BST[T]) heightRecursive(node *BSTNode[T]) int {
 	if node == nil {
 		return -1
@@ -291,12 +295,12 @@ func (bst *BST[T]) heightRecursive(node *BSTNode[T]) int {
 	return 1 + int(math.Max(float64(bst.heightRecursive(node.Left)), float64(bst.heightRecursive(node.Right))))
 }
 
-// IsBalanced checks if the BST is balanced (height difference between left and right subtrees <= 1)
+// IsBalanced checks if the BST is balanced (height difference between left and right subtrees <= 1).
 func (bst *BST[T]) IsBalanced() bool {
 	return bst.isBalancedRecursive(bst.Root) != -1
 }
 
-// isBalancedRecursive is the recursive helper for IsBalanced
+// isBalancedRecursive is the recursive helper for IsBalanced.
 func (bst *BST[T]) isBalancedRecursive(node *BSTNode[T]) int {
 	if node == nil {
 		return 0
@@ -319,7 +323,7 @@ func (bst *BST[T]) isBalancedRecursive(node *BSTNode[T]) int {
 	return 1 + int(math.Max(float64(leftHeight), float64(rightHeight)))
 }
 
-// abs returns the absolute value of an integer
+// abs returns the absolute value of an integer.
 func abs(x int) int {
 	if x < 0 {
 		return -x
@@ -327,14 +331,14 @@ func abs(x int) int {
 	return x
 }
 
-// InOrder returns the BST elements in in-order traversal
+// InOrder returns the BST elements in in-order traversal.
 func (bst *BST[T]) InOrder() []T {
 	var result []T
 	bst.inOrderRecursive(bst.Root, &result)
 	return result
 }
 
-// inOrderRecursive is the recursive helper for InOrder
+// inOrderRecursive is the recursive helper for InOrder.
 func (bst *BST[T]) inOrderRecursive(node *BSTNode[T], result *[]T) {
 	if node != nil {
 		bst.inOrderRecursive(node.Left, result)
@@ -343,14 +347,14 @@ func (bst *BST[T]) inOrderRecursive(node *BSTNode[T], result *[]T) {
 	}
 }
 
-// PreOrder returns the BST elements in pre-order traversal
+// PreOrder returns the BST elements in pre-order traversal.
 func (bst *BST[T]) PreOrder() []T {
 	var result []T
 	bst.preOrderRecursive(bst.Root, &result)
 	return result
 }
 
-// preOrderRecursive is the recursive helper for PreOrder
+// preOrderRecursive is the recursive helper for PreOrder.
 func (bst *BST[T]) preOrderRecursive(node *BSTNode[T], result *[]T) {
 	if node != nil {
 		*result = append(*result, node.Value)
@@ -359,14 +363,14 @@ func (bst *BST[T]) preOrderRecursive(node *BSTNode[T], result *[]T) {
 	}
 }
 
-// PostOrder returns the BST elements in post-order traversal
+// PostOrder returns the BST elements in post-order traversal.
 func (bst *BST[T]) PostOrder() []T {
 	var result []T
 	bst.postOrderRecursive(bst.Root, &result)
 	return result
 }
 
-// postOrderRecursive is the recursive helper for PostOrder
+// postOrderRecursive is the recursive helper for PostOrder.
 func (bst *BST[T]) postOrderRecursive(node *BSTNode[T], result *[]T) {
 	if node != nil {
 		bst.postOrderRecursive(node.Left, result)
@@ -375,7 +379,7 @@ func (bst *BST[T]) postOrderRecursive(node *BSTNode[T], result *[]T) {
 	}
 }
 
-// LevelOrder returns the BST elements in level-order traversal (breadth-first)
+// LevelOrder returns the BST elements in level-order traversal (breadth-first).
 func (bst *BST[T]) LevelOrder() []T {
 	var result []T
 	if bst.Root == nil {
@@ -398,17 +402,17 @@ func (bst *BST[T]) LevelOrder() []T {
 	return result
 }
 
-// String returns a string representation of the BST
+// String returns a string representation of the BST.
 func (bst *BST[T]) String() string {
 	return fmt.Sprintf("BST%v", bst.InOrder())
 }
 
-// ForEach applies a function to each element in in-order traversal
+// ForEach applies a function to each element in in-order traversal.
 func (bst *BST[T]) ForEach(fn func(T)) {
 	bst.forEachRecursive(bst.Root, fn)
 }
 
-// forEachRecursive is the recursive helper for ForEach
+// forEachRecursive is the recursive helper for ForEach.
 func (bst *BST[T]) forEachRecursive(node *BSTNode[T], fn func(T)) {
 	if node != nil {
 		bst.forEachRecursive(node.Left, fn)
@@ -417,14 +421,14 @@ func (bst *BST[T]) forEachRecursive(node *BSTNode[T], fn func(T)) {
 	}
 }
 
-// Filter returns a new BST containing elements that satisfy the predicate
+// Filter returns a new BST containing elements that satisfy the predicate.
 func (bst *BST[T]) Filter(predicate func(T) bool) *BST[T] {
 	result := NewBST[T](bst.Less)
 	bst.filterRecursive(bst.Root, predicate, result)
 	return result
 }
 
-// filterRecursive is the recursive helper for Filter
+// filterRecursive is the recursive helper for Filter.
 func (bst *BST[T]) filterRecursive(node *BSTNode[T], predicate func(T) bool, result *BST[T]) {
 	if node != nil {
 		bst.filterRecursive(node.Left, predicate, result)
@@ -435,14 +439,14 @@ func (bst *BST[T]) filterRecursive(node *BSTNode[T], predicate func(T) bool, res
 	}
 }
 
-// Clone creates a deep copy of the BST
+// Clone creates a deep copy of the BST.
 func (bst *BST[T]) Clone() *BST[T] {
 	result := NewBST[T](bst.Less)
 	bst.cloneRecursive(bst.Root, result)
 	return result
 }
 
-// cloneRecursive is the recursive helper for Clone
+// cloneRecursive is the recursive helper for Clone.
 func (bst *BST[T]) cloneRecursive(node *BSTNode[T], result *BST[T]) {
 	if node != nil {
 		bst.cloneRecursive(node.Left, result)
@@ -451,7 +455,7 @@ func (bst *BST[T]) cloneRecursive(node *BSTNode[T], result *BST[T]) {
 	}
 }
 
-// Equals checks if two BSTs contain the same elements
+// Equals checks if two BSTs contain the same elements.
 func (bst *BST[T]) Equals(other *BST[T]) bool {
 	if bst.Size != other.Size {
 		return false
@@ -469,14 +473,14 @@ func (bst *BST[T]) Equals(other *BST[T]) bool {
 	return true
 }
 
-// Range returns all values in the BST between min and max (inclusive)
+// Range returns all values in the BST between min and max (inclusive).
 func (bst *BST[T]) Range(min, max T) []T {
 	var result []T
 	bst.rangeRecursive(bst.Root, min, max, &result)
 	return result
 }
 
-// rangeRecursive is the recursive helper for Range
+// rangeRecursive is the recursive helper for Range.
 func (bst *BST[T]) rangeRecursive(node *BSTNode[T], min, max T, result *[]T) {
 	if node == nil {
 		return
@@ -498,24 +502,25 @@ func (bst *BST[T]) rangeRecursive(node *BSTNode[T], min, max T, result *[]T) {
 	}
 }
 
-// Successor returns the successor of the given value
+// Successor returns the successor of the given value.
 func (bst *BST[T]) Successor(value T) (T, bool) {
 	var successor *BSTNode[T]
 	current := bst.Root
 
 	for current != nil {
-		if bst.Less(current.Value, value) {
+		switch {
+		case bst.Less(current.Value, value):
 			current = current.Right
-		} else if bst.Less(value, current.Value) {
+		case bst.Less(value, current.Value):
 			successor = current
 			current = current.Left
-		} else {
+		default:
 			// Found the value
 			if current.Right != nil {
 				// Successor is the minimum value in right subtree
 				return bst.findMinValue(current.Right), true
 			}
-			break
+			current = nil // Exit loop
 		}
 	}
 
@@ -526,24 +531,25 @@ func (bst *BST[T]) Successor(value T) (T, bool) {
 	return zero, false
 }
 
-// Predecessor returns the predecessor of the given value
+// Predecessor returns the predecessor of the given value.
 func (bst *BST[T]) Predecessor(value T) (T, bool) {
 	var predecessor *BSTNode[T]
 	current := bst.Root
 
 	for current != nil {
-		if bst.Less(value, current.Value) {
+		switch {
+		case bst.Less(value, current.Value):
 			current = current.Left
-		} else if bst.Less(current.Value, value) {
+		case bst.Less(current.Value, value):
 			predecessor = current
 			current = current.Right
-		} else {
+		default:
 			// Found the value
 			if current.Left != nil {
 				// Predecessor is the maximum value in left subtree
 				return bst.findMaxValue(current.Left), true
 			}
-			break
+			current = nil // Exit loop
 		}
 	}
 

@@ -83,7 +83,7 @@ func TestBSTRemove(t *testing.T) {
 	}
 }
 
-// TestBSTTraversal is skipped as the methods are not yet implemented
+// TestBSTTraversal is skipped as the methods are not yet implemented.
 func TestBSTTraversal(t *testing.T) {
 	t.Skip("Traversal methods not implemented yet")
 }

@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-// Deque represents a double-ended queue
+// Deque represents a double-ended queue.
 type Deque[T any] struct {
 	data  []T
 	front int
@@ -13,7 +13,7 @@ type Deque[T any] struct {
 	size  int
 }
 
-// NewDeque creates a new empty deque with initial capacity
+// NewDeque creates a new empty deque with initial capacity.
 func NewDeque[T any](initialCapacity int) *Deque[T] {
 	if initialCapacity <= 0 {
 		initialCapacity = 16
@@ -26,7 +26,7 @@ func NewDeque[T any](initialCapacity int) *Deque[T] {
 	}
 }
 
-// NewDequeFromSlice creates a deque from a slice
+// NewDequeFromSlice creates a deque from a slice.
 func NewDequeFromSlice[T any](slice []T) *Deque[T] {
 	capacity := len(slice)
 	if capacity == 0 {
@@ -50,7 +50,7 @@ func NewDequeFromSlice[T any](slice []T) *Deque[T] {
 	return d
 }
 
-// ensureCapacity ensures the deque has enough capacity
+// ensureCapacity ensures the deque has enough capacity.
 func (d *Deque[T]) ensureCapacity() {
 	if d.size == len(d.data) {
 		// Need to grow
@@ -68,7 +68,7 @@ func (d *Deque[T]) ensureCapacity() {
 	}
 }
 
-// PushFront adds an element to the front of the deque
+// PushFront adds an element to the front of the deque.
 func (d *Deque[T]) PushFront(element T) {
 	d.ensureCapacity()
 
@@ -77,7 +77,7 @@ func (d *Deque[T]) PushFront(element T) {
 	d.size++
 }
 
-// PushBack adds an element to the back of the deque
+// PushBack adds an element to the back of the deque.
 func (d *Deque[T]) PushBack(element T) {
 	d.ensureCapacity()
 
@@ -86,7 +86,7 @@ func (d *Deque[T]) PushBack(element T) {
 	d.size++
 }
 
-// PopFront removes and returns the element from the front of the deque
+// PopFront removes and returns the element from the front of the deque.
 func (d *Deque[T]) PopFront() (T, bool) {
 	if d.IsEmpty() {
 		var zero T
@@ -100,7 +100,7 @@ func (d *Deque[T]) PopFront() (T, bool) {
 	return element, true
 }
 
-// PopBack removes and returns the element from the back of the deque
+// PopBack removes and returns the element from the back of the deque.
 func (d *Deque[T]) PopBack() (T, bool) {
 	if d.IsEmpty() {
 		var zero T
@@ -114,7 +114,7 @@ func (d *Deque[T]) PopBack() (T, bool) {
 	return element, true
 }
 
-// Front returns the element at the front of the deque without removing it
+// Front returns the element at the front of the deque without removing it.
 func (d *Deque[T]) Front() (T, bool) {
 	if d.IsEmpty() {
 		var zero T
@@ -123,7 +123,7 @@ func (d *Deque[T]) Front() (T, bool) {
 	return d.data[d.front], true
 }
 
-// Back returns the element at the back of the deque without removing it
+// Back returns the element at the back of the deque without removing it.
 func (d *Deque[T]) Back() (T, bool) {
 	if d.IsEmpty() {
 		var zero T
@@ -133,7 +133,7 @@ func (d *Deque[T]) Back() (T, bool) {
 	return d.data[backIndex], true
 }
 
-// At returns the element at the specified index
+// At returns the element at the specified index.
 func (d *Deque[T]) At(index int) (T, bool) {
 	if index < 0 || index >= d.size {
 		var zero T
@@ -143,7 +143,7 @@ func (d *Deque[T]) At(index int) (T, bool) {
 	return d.data[actualIndex], true
 }
 
-// Set sets the element at the specified index
+// Set sets the element at the specified index.
 func (d *Deque[T]) Set(index int, element T) bool {
 	if index < 0 || index >= d.size {
 		return false
@@ -153,17 +153,17 @@ func (d *Deque[T]) Set(index int, element T) bool {
 	return true
 }
 
-// Size returns the number of elements in the deque
+// Size returns the number of elements in the deque.
 func (d *Deque[T]) Size() int {
 	return d.size
 }
 
-// IsEmpty checks if the deque is empty
+// IsEmpty checks if the deque is empty.
 func (d *Deque[T]) IsEmpty() bool {
 	return d.size == 0
 }
 
-// Clear removes all elements from the deque
+// Clear removes all elements from the deque.
 func (d *Deque[T]) Clear() {
 	d.front = 0
 	d.back = 0
@@ -175,12 +175,12 @@ func (d *Deque[T]) Clear() {
 	}
 }
 
-// Capacity returns the current capacity of the deque
+// Capacity returns the current capacity of the deque.
 func (d *Deque[T]) Capacity() int {
 	return len(d.data)
 }
 
-// Reserve ensures the deque has at least the specified capacity
+// Reserve ensures the deque has at least the specified capacity.
 func (d *Deque[T]) Reserve(capacity int) {
 	if capacity > len(d.data) {
 		newData := make([]T, capacity)
@@ -196,7 +196,7 @@ func (d *Deque[T]) Reserve(capacity int) {
 	}
 }
 
-// ShrinkToFit reduces the capacity to match the size
+// ShrinkToFit reduces the capacity to match the size.
 func (d *Deque[T]) ShrinkToFit() {
 	if d.size < len(d.data) {
 		newData := make([]T, d.size)
@@ -212,7 +212,7 @@ func (d *Deque[T]) ShrinkToFit() {
 	}
 }
 
-// ToSlice converts the deque to a slice
+// ToSlice converts the deque to a slice.
 func (d *Deque[T]) ToSlice() []T {
 	result := make([]T, d.size)
 	for i := 0; i < d.size; i++ {
@@ -221,26 +221,26 @@ func (d *Deque[T]) ToSlice() []T {
 	return result
 }
 
-// String returns a string representation of the deque
+// String returns a string representation of the deque.
 func (d *Deque[T]) String() string {
 	return fmt.Sprintf("Deque%v", d.ToSlice())
 }
 
-// ForEach applies a function to each element in the deque
+// ForEach applies a function to each element in the deque.
 func (d *Deque[T]) ForEach(fn func(T)) {
 	for i := 0; i < d.size; i++ {
 		fn(d.data[(d.front+i)%len(d.data)])
 	}
 }
 
-// ForEachIndex applies a function to each element and its index in the deque
+// ForEachIndex applies a function to each element and its index in the deque.
 func (d *Deque[T]) ForEachIndex(fn func(int, T)) {
 	for i := 0; i < d.size; i++ {
 		fn(i, d.data[(d.front+i)%len(d.data)])
 	}
 }
 
-// Filter returns a new deque containing elements that satisfy the predicate
+// Filter returns a new deque containing elements that satisfy the predicate.
 func (d *Deque[T]) Filter(predicate func(T) bool) *Deque[T] {
 	result := NewDeque[T](d.size)
 	for i := 0; i < d.size; i++ {
@@ -252,7 +252,7 @@ func (d *Deque[T]) Filter(predicate func(T) bool) *Deque[T] {
 	return result
 }
 
-// Any returns true if any element satisfies the predicate
+// Any returns true if any element satisfies the predicate.
 func (d *Deque[T]) Any(predicate func(T) bool) bool {
 	for i := 0; i < d.size; i++ {
 		element := d.data[(d.front+i)%len(d.data)]
@@ -263,7 +263,7 @@ func (d *Deque[T]) Any(predicate func(T) bool) bool {
 	return false
 }
 
-// All returns true if all elements satisfy the predicate
+// All returns true if all elements satisfy the predicate.
 func (d *Deque[T]) All(predicate func(T) bool) bool {
 	for i := 0; i < d.size; i++ {
 		element := d.data[(d.front+i)%len(d.data)]
@@ -274,7 +274,7 @@ func (d *Deque[T]) All(predicate func(T) bool) bool {
 	return true
 }
 
-// Clone creates a deep copy of the deque
+// Clone creates a deep copy of the deque.
 func (d *Deque[T]) Clone() *Deque[T] {
 	result := NewDeque[T](d.size)
 	for i := 0; i < d.size; i++ {
@@ -283,7 +283,7 @@ func (d *Deque[T]) Clone() *Deque[T] {
 	return result
 }
 
-// Equals checks if two deques contain the same elements in the same order
+// Equals checks if two deques contain the same elements in the same order.
 func (d *Deque[T]) Equals(other *Deque[T]) bool {
 	if d.size != other.size {
 		return false
@@ -300,7 +300,7 @@ func (d *Deque[T]) Equals(other *Deque[T]) bool {
 	return true
 }
 
-// Reverse reverses the order of elements in the deque
+// Reverse reverses the order of elements in the deque.
 func (d *Deque[T]) Reverse() {
 	if d.size <= 1 {
 		return
@@ -318,7 +318,7 @@ func (d *Deque[T]) Reverse() {
 	}
 }
 
-// RotateLeft rotates the deque left by n positions
+// RotateLeft rotates the deque left by n positions.
 func (d *Deque[T]) RotateLeft(n int) {
 	if d.size <= 1 || n == 0 {
 		return
@@ -336,7 +336,7 @@ func (d *Deque[T]) RotateLeft(n int) {
 	}
 }
 
-// RotateRight rotates the deque right by n positions
+// RotateRight rotates the deque right by n positions.
 func (d *Deque[T]) RotateRight(n int) {
 	if d.size <= 1 || n == 0 {
 		return
@@ -354,7 +354,7 @@ func (d *Deque[T]) RotateRight(n int) {
 	}
 }
 
-// Swap swaps elements at the specified indices
+// Swap swaps elements at the specified indices.
 func (d *Deque[T]) Swap(i, j int) bool {
 	if i < 0 || i >= d.size || j < 0 || j >= d.size {
 		return false
@@ -367,7 +367,7 @@ func (d *Deque[T]) Swap(i, j int) bool {
 	return true
 }
 
-// Insert inserts an element at the specified index
+// Insert inserts an element at the specified index.
 func (d *Deque[T]) Insert(index int, element T) bool {
 	if index < 0 || index > d.size {
 		return false
@@ -402,7 +402,7 @@ func (d *Deque[T]) Insert(index int, element T) bool {
 	return true
 }
 
-// Remove removes the element at the specified index
+// Remove removes the element at the specified index.
 func (d *Deque[T]) Remove(index int) (T, bool) {
 	if index < 0 || index >= d.size {
 		var zero T

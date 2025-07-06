@@ -57,7 +57,6 @@ func TestQueueBasicOperations(t *testing.T) {
 	if ok {
 		t.Error("Dequeue should fail on empty queue")
 	}
-
 }
 
 func TestQueueEnqueueAll(t *testing.T) {

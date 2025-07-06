@@ -162,14 +162,14 @@ func TestTreeMapStatisticalOperations(t *testing.T) {
 
 	// Setup ordered key-value pairs
 	pairs := []struct {
-		key   int
 		value string
+		key   int
 	}{
-		{1, testValueOne},
-		{3, testValueThree},
-		{5, testValueFive},
-		{7, testValueSeven},
-		{9, testValueNine},
+		{key: 1, value: testValueOne},
+		{key: 3, value: testValueThree},
+		{key: 5, value: testValueFive},
+		{key: 7, value: testValueSeven},
+		{key: 9, value: testValueNine},
 	}
 
 	for _, pair := range pairs {

@@ -80,7 +80,7 @@ func TestTrieDelete(t *testing.T) {
 	}
 }
 
-// TestTrieWithValues is skipped as the GetValue method is not implemented
+// TestTrieWithValues is skipped as the GetValue method is not implemented.
 func TestTrieWithValues(t *testing.T) {
 	trie := NewTrie()
 
@@ -324,7 +324,7 @@ func TestTrieLongestCommonPrefix(t *testing.T) {
 	}
 }
 
-// Helper function for testing string slice containment
+// Helper function for testing string slice containment.
 func contains(slice []string, str string) bool {
 	for _, s := range slice {
 		if s == str {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// TreeMapNode represents a node in a TreeMap
+// TreeMapNode represents a node in a TreeMap.
 type TreeMapNode[K comparable, V any] struct {
 	Key   K
 	Value V
@@ -12,14 +12,14 @@ type TreeMapNode[K comparable, V any] struct {
 	Right *TreeMapNode[K, V]
 }
 
-// TreeMap represents an ordered map using a binary search tree
+// TreeMap represents an ordered map using a binary search tree.
 type TreeMap[K comparable, V any] struct {
 	root *TreeMapNode[K, V]
+	less func(K, K) bool
 	size int
-	less func(K, K) bool // Comparator function
 }
 
-// NewTreeMap creates a new empty TreeMap with a comparator function
+// NewTreeMap creates a new empty TreeMap with a comparator function.
 func NewTreeMap[K comparable, V any](less func(K, K) bool) *TreeMap[K, V] {
 	return &TreeMap[K, V]{
 		root: nil,
@@ -28,7 +28,7 @@ func NewTreeMap[K comparable, V any](less func(K, K) bool) *TreeMap[K, V] {
 	}
 }
 
-// NewTreeMapFromMap creates a TreeMap from a regular map
+// NewTreeMapFromMap creates a TreeMap from a regular map.
 func NewTreeMapFromMap[K comparable, V any](m map[K]V, less func(K, K) bool) *TreeMap[K, V] {
 	tm := NewTreeMap[K, V](less)
 	for key, value := range m {
@@ -37,12 +37,12 @@ func NewTreeMapFromMap[K comparable, V any](m map[K]V, less func(K, K) bool) *Tr
 	return tm
 }
 
-// Put adds or updates a key-value pair in the TreeMap
+// Put adds or updates a key-value pair in the TreeMap.
 func (tm *TreeMap[K, V]) Put(key K, value V) {
 	tm.root = tm.putRecursive(tm.root, key, value)
 }
 
-// putRecursive is the recursive helper for Put
+// putRecursive is the recursive helper for Put.
 func (tm *TreeMap[K, V]) putRecursive(node *TreeMapNode[K, V], key K, value V) *TreeMapNode[K, V] {
 	if node == nil {
 		tm.size++
@@ -52,11 +52,12 @@ func (tm *TreeMap[K, V]) putRecursive(node *TreeMapNode[K, V], key K, value V) *
 		}
 	}
 
-	if tm.less(key, node.Key) {
+	switch {
+	case tm.less(key, node.Key):
 		node.Left = tm.putRecursive(node.Left, key, value)
-	} else if tm.less(node.Key, key) {
+	case tm.less(node.Key, key):
 		node.Right = tm.putRecursive(node.Right, key, value)
-	} else {
+	default:
 		// Key already exists, update value
 		node.Value = value
 	}
@@ -64,7 +65,7 @@ func (tm *TreeMap[K, V]) putRecursive(node *TreeMapNode[K, V], key K, value V) *
 	return node
 }
 
-// Get returns the value associated with the given key
+// Get returns the value associated with the given key.
 func (tm *TreeMap[K, V]) Get(key K) (V, bool) {
 	node := tm.getNode(key)
 	if node != nil {
@@ -74,16 +75,17 @@ func (tm *TreeMap[K, V]) Get(key K) (V, bool) {
 	return zero, false
 }
 
-// getNode is a helper function that returns the node with the given key
+// getNode is a helper function that returns the node with the given key.
 func (tm *TreeMap[K, V]) getNode(key K) *TreeMapNode[K, V] {
 	current := tm.root
 
 	for current != nil {
-		if tm.less(key, current.Key) {
+		switch {
+		case tm.less(key, current.Key):
 			current = current.Left
-		} else if tm.less(current.Key, key) {
+		case tm.less(current.Key, key):
 			current = current.Right
-		} else {
+		default:
 			return current
 		}
 	}
@@ -91,7 +93,7 @@ func (tm *TreeMap[K, V]) getNode(key K) *TreeMapNode[K, V] {
 	return nil
 }
 
-// Remove removes a key-value pair from the TreeMap
+// Remove removes a key-value pair from the TreeMap.
 func (tm *TreeMap[K, V]) Remove(key K) bool {
 	if tm.ContainsKey(key) {
 		tm.root = tm.removeRecursive(tm.root, key)
@@ -101,17 +103,18 @@ func (tm *TreeMap[K, V]) Remove(key K) bool {
 	return false
 }
 
-// removeRecursive is the recursive helper for Remove
+// removeRecursive is the recursive helper for Remove.
 func (tm *TreeMap[K, V]) removeRecursive(node *TreeMapNode[K, V], key K) *TreeMapNode[K, V] {
 	if node == nil {
 		return nil
 	}
 
-	if tm.less(key, node.Key) {
+	switch {
+	case tm.less(key, node.Key):
 		node.Left = tm.removeRecursive(node.Left, key)
-	} else if tm.less(node.Key, key) {
+	case tm.less(node.Key, key):
 		node.Right = tm.removeRecursive(node.Right, key)
-	} else {
+	default:
 		// Node to remove found
 		if node.Left == nil {
 			return node.Right
@@ -130,7 +133,7 @@ func (tm *TreeMap[K, V]) removeRecursive(node *TreeMapNode[K, V], key K) *TreeMa
 	return node
 }
 
-// minNode finds the node with the minimum key in a subtree
+// minNode finds the node with the minimum key in a subtree.
 func (tm *TreeMap[K, V]) minNode(node *TreeMapNode[K, V]) *TreeMapNode[K, V] {
 	current := node
 	for current.Left != nil {
@@ -139,7 +142,7 @@ func (tm *TreeMap[K, V]) minNode(node *TreeMapNode[K, V]) *TreeMapNode[K, V] {
 	return current
 }
 
-// maxNode finds the node with the maximum key in a subtree
+// maxNode finds the node with the maximum key in a subtree.
 func (tm *TreeMap[K, V]) maxNode(node *TreeMapNode[K, V]) *TreeMapNode[K, V] {
 	current := node
 	for current.Right != nil {
@@ -148,17 +151,17 @@ func (tm *TreeMap[K, V]) maxNode(node *TreeMapNode[K, V]) *TreeMapNode[K, V] {
 	return current
 }
 
-// ContainsKey checks if a key exists in the TreeMap
+// ContainsKey checks if a key exists in the TreeMap.
 func (tm *TreeMap[K, V]) ContainsKey(key K) bool {
 	return tm.getNode(key) != nil
 }
 
-// ContainsValue checks if a value exists in the TreeMap
+// ContainsValue checks if a value exists in the TreeMap.
 func (tm *TreeMap[K, V]) ContainsValue(value V) bool {
 	return tm.containsValueRecursive(tm.root, value)
 }
 
-// containsValueRecursive is the recursive helper for ContainsValue
+// containsValueRecursive is the recursive helper for ContainsValue.
 func (tm *TreeMap[K, V]) containsValueRecursive(node *TreeMapNode[K, V], value V) bool {
 	if node == nil {
 		return false
@@ -171,8 +174,7 @@ func (tm *TreeMap[K, V]) containsValueRecursive(node *TreeMapNode[K, V], value V
 	return tm.containsValueRecursive(node.Left, value) || tm.containsValueRecursive(node.Right, value)
 }
 
-// Min returns the key-value pair with the minimum key
-// Named return values for clarity and to satisfy linter
+// Named return values for clarity and to satisfy linter.
 func (tm *TreeMap[K, V]) Min() (key K, value V, ok bool) {
 	if tm.IsEmpty() {
 		return key, value, false
@@ -181,7 +183,7 @@ func (tm *TreeMap[K, V]) Min() (key K, value V, ok bool) {
 	return node.Key, node.Value, true
 }
 
-// Max returns the key-value pair with the maximum key
+// Max returns the key-value pair with the maximum key.
 func (tm *TreeMap[K, V]) Max() (K, V, bool) {
 	if tm.IsEmpty() {
 		var zeroK K
@@ -192,7 +194,7 @@ func (tm *TreeMap[K, V]) Max() (K, V, bool) {
 	return node.Key, node.Value, true
 }
 
-// Floor returns the largest key less than or equal to the given key
+// Floor returns the largest key less than or equal to the given key.
 func (tm *TreeMap[K, V]) Floor(key K) (K, V, bool) {
 	result := tm.floorRecursive(tm.root, key)
 	if result == nil {
@@ -203,7 +205,7 @@ func (tm *TreeMap[K, V]) Floor(key K) (K, V, bool) {
 	return result.Key, result.Value, true
 }
 
-// floorRecursive is the recursive helper for Floor
+// floorRecursive is the recursive helper for Floor.
 func (tm *TreeMap[K, V]) floorRecursive(node *TreeMapNode[K, V], key K) *TreeMapNode[K, V] {
 	if node == nil {
 		return nil
@@ -225,7 +227,7 @@ func (tm *TreeMap[K, V]) floorRecursive(node *TreeMapNode[K, V], key K) *TreeMap
 	return node
 }
 
-// Ceiling returns the smallest key greater than or equal to the given key
+// Ceiling returns the smallest key greater than or equal to the given key.
 func (tm *TreeMap[K, V]) Ceiling(key K) (K, V, bool) {
 	result := tm.ceilingRecursive(tm.root, key)
 	if result == nil {
@@ -236,7 +238,7 @@ func (tm *TreeMap[K, V]) Ceiling(key K) (K, V, bool) {
 	return result.Key, result.Value, true
 }
 
-// ceilingRecursive is the recursive helper for Ceiling
+// ceilingRecursive is the recursive helper for Ceiling.
 func (tm *TreeMap[K, V]) ceilingRecursive(node *TreeMapNode[K, V], key K) *TreeMapNode[K, V] {
 	if node == nil {
 		return nil
@@ -258,7 +260,7 @@ func (tm *TreeMap[K, V]) ceilingRecursive(node *TreeMapNode[K, V], key K) *TreeM
 	return node
 }
 
-// Lower returns the largest key strictly less than the given key
+// Lower returns the largest key strictly less than the given key.
 func (tm *TreeMap[K, V]) Lower(key K) (K, V, bool) {
 	result := tm.lowerRecursive(tm.root, key)
 	if result == nil {
@@ -269,7 +271,7 @@ func (tm *TreeMap[K, V]) Lower(key K) (K, V, bool) {
 	return result.Key, result.Value, true
 }
 
-// lowerRecursive is the recursive helper for Lower
+// lowerRecursive is the recursive helper for Lower.
 func (tm *TreeMap[K, V]) lowerRecursive(node *TreeMapNode[K, V], key K) *TreeMapNode[K, V] {
 	if node == nil {
 		return nil
@@ -288,7 +290,7 @@ func (tm *TreeMap[K, V]) lowerRecursive(node *TreeMapNode[K, V], key K) *TreeMap
 	return tm.lowerRecursive(node.Left, key)
 }
 
-// Higher returns the smallest key strictly greater than the given key
+// Higher returns the smallest key strictly greater than the given key.
 func (tm *TreeMap[K, V]) Higher(key K) (K, V, bool) {
 	result := tm.higherRecursive(tm.root, key)
 	if result == nil {
@@ -299,7 +301,7 @@ func (tm *TreeMap[K, V]) Higher(key K) (K, V, bool) {
 	return result.Key, result.Value, true
 }
 
-// higherRecursive is the recursive helper for Higher
+// higherRecursive is the recursive helper for Higher.
 func (tm *TreeMap[K, V]) higherRecursive(node *TreeMapNode[K, V], key K) *TreeMapNode[K, V] {
 	if node == nil {
 		return nil
@@ -318,27 +320,28 @@ func (tm *TreeMap[K, V]) higherRecursive(node *TreeMapNode[K, V], key K) *TreeMa
 	return tm.higherRecursive(node.Right, key)
 }
 
-// Rank returns the number of keys less than the given key
+// Rank returns the number of keys less than the given key.
 func (tm *TreeMap[K, V]) Rank(key K) int {
 	return tm.rankRecursive(tm.root, key)
 }
 
-// rankRecursive is the recursive helper for Rank
+// rankRecursive is the recursive helper for Rank.
 func (tm *TreeMap[K, V]) rankRecursive(node *TreeMapNode[K, V], key K) int {
 	if node == nil {
 		return 0
 	}
 
-	if tm.less(key, node.Key) {
+	switch {
+	case tm.less(key, node.Key):
 		return tm.rankRecursive(node.Left, key)
-	} else if tm.less(node.Key, key) {
+	case tm.less(node.Key, key):
 		return 1 + tm.sizeOf(node.Left) + tm.rankRecursive(node.Right, key)
-	} else {
+	default:
 		return tm.sizeOf(node.Left)
 	}
 }
 
-// Select returns the key-value pair with the given rank
+// Select returns the key-value pair with the given rank.
 func (tm *TreeMap[K, V]) Select(rank int) (K, V, bool) {
 	if rank < 0 || rank >= tm.size {
 		var zeroK K
@@ -349,23 +352,24 @@ func (tm *TreeMap[K, V]) Select(rank int) (K, V, bool) {
 	return result.Key, result.Value, true
 }
 
-// selectRecursive is the recursive helper for Select
+// selectRecursive is the recursive helper for Select.
 func (tm *TreeMap[K, V]) selectRecursive(node *TreeMapNode[K, V], rank int) *TreeMapNode[K, V] {
 	if node == nil {
 		return nil
 	}
 
 	leftSize := tm.sizeOf(node.Left)
-	if rank < leftSize {
+	switch {
+	case rank < leftSize:
 		return tm.selectRecursive(node.Left, rank)
-	} else if rank > leftSize {
+	case rank > leftSize:
 		return tm.selectRecursive(node.Right, rank-leftSize-1)
-	} else {
+	default:
 		return node
 	}
 }
 
-// sizeOf returns the size of a subtree
+// sizeOf returns the size of a subtree.
 func (tm *TreeMap[K, V]) sizeOf(node *TreeMapNode[K, V]) int {
 	if node == nil {
 		return 0
@@ -373,23 +377,23 @@ func (tm *TreeMap[K, V]) sizeOf(node *TreeMapNode[K, V]) int {
 	return 1 + tm.sizeOf(node.Left) + tm.sizeOf(node.Right)
 }
 
-// Size returns the number of key-value pairs in the TreeMap
+// Size returns the number of key-value pairs in the TreeMap.
 func (tm *TreeMap[K, V]) Size() int {
 	return tm.size
 }
 
-// IsEmpty checks if the TreeMap is empty
+// IsEmpty checks if the TreeMap is empty.
 func (tm *TreeMap[K, V]) IsEmpty() bool {
 	return tm.size == 0
 }
 
-// Clear removes all key-value pairs from the TreeMap
+// Clear removes all key-value pairs from the TreeMap.
 func (tm *TreeMap[K, V]) Clear() {
 	tm.root = nil
 	tm.size = 0
 }
 
-// Keys returns all keys in the TreeMap in sorted order
+// Keys returns all keys in the TreeMap in sorted order.
 func (tm *TreeMap[K, V]) Keys() []K {
 	var keys []K
 	tm.inOrderTraversal(tm.root, func(key K, value V) {
@@ -398,7 +402,7 @@ func (tm *TreeMap[K, V]) Keys() []K {
 	return keys
 }
 
-// Values returns all values in the TreeMap in key order
+// Values returns all values in the TreeMap in key order.
 func (tm *TreeMap[K, V]) Values() []V {
 	var values []V
 	tm.inOrderTraversal(tm.root, func(key K, value V) {
@@ -407,7 +411,7 @@ func (tm *TreeMap[K, V]) Values() []V {
 	return values
 }
 
-// Entries returns all key-value pairs in the TreeMap in sorted order
+// Entries returns all key-value pairs in the TreeMap in sorted order.
 func (tm *TreeMap[K, V]) Entries() []struct {
 	Key   K
 	Value V
@@ -425,7 +429,7 @@ func (tm *TreeMap[K, V]) Entries() []struct {
 	return entries
 }
 
-// inOrderTraversal performs an in-order traversal of the tree
+// inOrderTraversal performs an in-order traversal of the tree.
 func (tm *TreeMap[K, V]) inOrderTraversal(node *TreeMapNode[K, V], fn func(K, V)) {
 	if node != nil {
 		tm.inOrderTraversal(node.Left, fn)
@@ -434,7 +438,7 @@ func (tm *TreeMap[K, V]) inOrderTraversal(node *TreeMapNode[K, V], fn func(K, V)
 	}
 }
 
-// ToMap converts the TreeMap to a regular map
+// ToMap converts the TreeMap to a regular map.
 func (tm *TreeMap[K, V]) ToMap() map[K]V {
 	result := make(map[K]V)
 	tm.inOrderTraversal(tm.root, func(key K, value V) {
@@ -443,24 +447,24 @@ func (tm *TreeMap[K, V]) ToMap() map[K]V {
 	return result
 }
 
-// String returns a string representation of the TreeMap
+// String returns a string representation of the TreeMap.
 func (tm *TreeMap[K, V]) String() string {
 	return fmt.Sprintf("TreeMap%v", tm.ToMap())
 }
 
-// ForEach applies a function to each key-value pair in sorted order
+// ForEach applies a function to each key-value pair in sorted order.
 func (tm *TreeMap[K, V]) ForEach(fn func(K, V)) {
 	tm.inOrderTraversal(tm.root, fn)
 }
 
-// Filter returns a new TreeMap containing entries that satisfy the predicate
+// Filter returns a new TreeMap containing entries that satisfy the predicate.
 func (tm *TreeMap[K, V]) Filter(predicate func(K, V) bool) *TreeMap[K, V] {
 	result := NewTreeMap[K, V](tm.less)
 	tm.filterRecursive(tm.root, predicate, result)
 	return result
 }
 
-// filterRecursive is the recursive helper for Filter
+// filterRecursive is the recursive helper for Filter.
 func (tm *TreeMap[K, V]) filterRecursive(node *TreeMapNode[K, V], predicate func(K, V) bool, result *TreeMap[K, V]) {
 	if node != nil {
 		tm.filterRecursive(node.Left, predicate, result)
@@ -471,14 +475,14 @@ func (tm *TreeMap[K, V]) filterRecursive(node *TreeMapNode[K, V], predicate func
 	}
 }
 
-// Clone creates a deep copy of the TreeMap
+// Clone creates a deep copy of the TreeMap.
 func (tm *TreeMap[K, V]) Clone() *TreeMap[K, V] {
 	result := NewTreeMap[K, V](tm.less)
 	tm.cloneRecursive(tm.root, result)
 	return result
 }
 
-// cloneRecursive is the recursive helper for Clone
+// cloneRecursive is the recursive helper for Clone.
 func (tm *TreeMap[K, V]) cloneRecursive(node *TreeMapNode[K, V], result *TreeMap[K, V]) {
 	if node != nil {
 		tm.cloneRecursive(node.Left, result)
@@ -487,7 +491,7 @@ func (tm *TreeMap[K, V]) cloneRecursive(node *TreeMapNode[K, V], result *TreeMap
 	}
 }
 
-// Equals checks if two TreeMaps contain the same key-value pairs
+// Equals checks if two TreeMaps contain the same key-value pairs.
 func (tm *TreeMap[K, V]) Equals(other *TreeMap[K, V]) bool {
 	if tm.size != other.size {
 		return false
@@ -505,7 +509,7 @@ func (tm *TreeMap[K, V]) Equals(other *TreeMap[K, V]) bool {
 	return true
 }
 
-// Range returns all key-value pairs in the TreeMap between min and max (inclusive)
+// Range returns all key-value pairs in the TreeMap between min and max (inclusive).
 func (tm *TreeMap[K, V]) Range(min, max K) []struct {
 	Key   K
 	Value V
@@ -518,7 +522,7 @@ func (tm *TreeMap[K, V]) Range(min, max K) []struct {
 	return result
 }
 
-// rangeRecursive is the recursive helper for Range
+// rangeRecursive is the recursive helper for Range.
 func (tm *TreeMap[K, V]) rangeRecursive(node *TreeMapNode[K, V], min, max K, result *[]struct {
 	Key   K
 	Value V
@@ -546,12 +550,12 @@ func (tm *TreeMap[K, V]) rangeRecursive(node *TreeMapNode[K, V], min, max K, res
 	}
 }
 
-// Height returns the height of the TreeMap
+// Height returns the height of the TreeMap.
 func (tm *TreeMap[K, V]) Height() int {
 	return tm.heightRecursive(tm.root)
 }
 
-// heightRecursive is the recursive helper for Height
+// heightRecursive is the recursive helper for Height.
 func (tm *TreeMap[K, V]) heightRecursive(node *TreeMapNode[K, V]) int {
 	if node == nil {
 		return -1
@@ -564,12 +568,12 @@ func (tm *TreeMap[K, V]) heightRecursive(node *TreeMapNode[K, V]) int {
 	return 1 + rightHeight
 }
 
-// IsBalanced checks if the TreeMap is balanced
+// IsBalanced checks if the TreeMap is balanced.
 func (tm *TreeMap[K, V]) IsBalanced() bool {
 	return tm.isBalancedRecursive(tm.root) != -1
 }
 
-// isBalancedRecursive is the recursive helper for IsBalanced
+// isBalancedRecursive is the recursive helper for IsBalanced.
 func (tm *TreeMap[K, V]) isBalancedRecursive(node *TreeMapNode[K, V]) int {
 	if node == nil {
 		return 0

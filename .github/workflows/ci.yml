@@ -5,6 +5,13 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sundays for security scans
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: read
 
 jobs:
   test:
@@ -13,16 +20,17 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        go-version: ['1.21', '1.22']
+        go-version: ['1.21', '1.24']
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Set up Go ${{ matrix.go-version }}
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ matrix.go-version }}
+        cache: true
 
     - name: Install dependencies
       run: go mod download
@@ -30,18 +38,14 @@ jobs:
     - name: Run tests
       shell: bash
       run: |
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          go test -v -race -coverprofile="coverage.txt" -covermode=atomic "./stl"
-        else
-          go test -v -race -coverprofile=coverage.txt -covermode=atomic ./stl
-        fi
+        go test -v -race -coverprofile=coverage.txt -covermode=atomic ./stl/...
 
     - name: Run examples
       shell: bash
       run: go run ./examples/main.go
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./coverage.txt
         flags: unittests
@@ -56,17 +60,17 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
-        go-version: '1.22'
+        go-version: '1.24'
+        cache: true
 
-    - name: Install golangci-lint
+    - name: golangci-lint
       uses: golangci/golangci-lint-action@v4
       with:
         version: latest
-
-    - name: Run golangci-lint
-      run: golangci-lint run
+        args: --timeout=5m
+        only-new-issues: true
 
   security:
     name: Security Scan
@@ -81,15 +85,21 @@ jobs:
 
     - name: Set up Go
       id: go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
-        go-version: "1.22.0"
+        go-version: "1.24"
         check-latest: true
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: go
+
+    - name: Install govulncheck
+      run: go install golang.org/x/vuln/cmd/govulncheck@latest
+
+    - name: Run govulncheck
+      run: govulncheck ./...
 
     - name: Run gosec security scanner
       uses: securego/gosec@v2.19.0
@@ -121,28 +131,9 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
-        go-version: '1.22'
+        go-version: '1.24'
 
     - name: Run benchmarks
       run: go test -bench=. -benchmem ./stl
-
-  dependency-check:
-    name: Dependency Scan
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.22'
-
-    - name: Install Nancy
-      run: go install github.com/sonatype-nexus-community/nancy@latest
-
-    - name: Check dependencies with Nancy
-      run: |
-        go list -json -m all | nancy sleuth

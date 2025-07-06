@@ -5,29 +5,29 @@ import (
 	"sort"
 )
 
-// MultiMap represents a map that allows multiple values per key
+// MultiMap represents a map that allows multiple values per key.
 type MultiMap[K comparable, V any] struct {
 	data map[K][]V
 }
 
-// NewMultiMap creates a new empty multimap
+// NewMultiMap creates a new empty multimap.
 func NewMultiMap[K comparable, V any]() *MultiMap[K, V] {
 	return &MultiMap[K, V]{
 		data: make(map[K][]V),
 	}
 }
 
-// Put adds a value to the multimap for the given key
+// Put adds a value to the multimap for the given key.
 func (mm *MultiMap[K, V]) Put(key K, value V) {
 	mm.data[key] = append(mm.data[key], value)
 }
 
-// PutAll adds multiple values to the multimap for the given key
+// PutAll adds multiple values to the multimap for the given key.
 func (mm *MultiMap[K, V]) PutAll(key K, values []V) {
 	mm.data[key] = append(mm.data[key], values...)
 }
 
-// Get returns all values associated with the given key
+// Get returns all values associated with the given key.
 func (mm *MultiMap[K, V]) Get(key K) []V {
 	if values, exists := mm.data[key]; exists {
 		// Return a copy to prevent external modification
@@ -38,7 +38,7 @@ func (mm *MultiMap[K, V]) Get(key K) []V {
 	return []V{}
 }
 
-// GetFirst returns the first value associated with the given key
+// GetFirst returns the first value associated with the given key.
 func (mm *MultiMap[K, V]) GetFirst(key K) (V, bool) {
 	if values, exists := mm.data[key]; exists && len(values) > 0 {
 		return values[0], true
@@ -47,7 +47,7 @@ func (mm *MultiMap[K, V]) GetFirst(key K) (V, bool) {
 	return zero, false
 }
 
-// GetLast returns the last value associated with the given key
+// GetLast returns the last value associated with the given key.
 func (mm *MultiMap[K, V]) GetLast(key K) (V, bool) {
 	if values, exists := mm.data[key]; exists && len(values) > 0 {
 		return values[len(values)-1], true
@@ -56,7 +56,7 @@ func (mm *MultiMap[K, V]) GetLast(key K) (V, bool) {
 	return zero, false
 }
 
-// Remove removes a specific value from the multimap for the given key
+// Remove removes a specific value from the multimap for the given key.
 func (mm *MultiMap[K, V]) Remove(key K, value V) bool {
 	if values, exists := mm.data[key]; exists {
 		for i, v := range values {
@@ -74,7 +74,7 @@ func (mm *MultiMap[K, V]) Remove(key K, value V) bool {
 	return false
 }
 
-// RemoveAll removes all values for the given key
+// RemoveAll removes all values for the given key.
 func (mm *MultiMap[K, V]) RemoveAll(key K) bool {
 	if _, exists := mm.data[key]; exists {
 		delete(mm.data, key)
@@ -83,18 +83,18 @@ func (mm *MultiMap[K, V]) RemoveAll(key K) bool {
 	return false
 }
 
-// RemoveKey removes all values for the given key (alias for RemoveAll)
+// RemoveKey removes all values for the given key (alias for RemoveAll).
 func (mm *MultiMap[K, V]) RemoveKey(key K) bool {
 	return mm.RemoveAll(key)
 }
 
-// ContainsKey checks if the multimap contains the given key
+// ContainsKey checks if the multimap contains the given key.
 func (mm *MultiMap[K, V]) ContainsKey(key K) bool {
 	_, exists := mm.data[key]
 	return exists
 }
 
-// ContainsValue checks if the multimap contains the given value
+// ContainsValue checks if the multimap contains the given value.
 func (mm *MultiMap[K, V]) ContainsValue(value V) bool {
 	for _, values := range mm.data {
 		for _, v := range values {
@@ -106,7 +106,7 @@ func (mm *MultiMap[K, V]) ContainsValue(value V) bool {
 	return false
 }
 
-// ContainsEntry checks if the multimap contains the given key-value pair
+// ContainsEntry checks if the multimap contains the given key-value pair.
 func (mm *MultiMap[K, V]) ContainsEntry(key K, value V) bool {
 	if values, exists := mm.data[key]; exists {
 		for _, v := range values {
@@ -118,7 +118,7 @@ func (mm *MultiMap[K, V]) ContainsEntry(key K, value V) bool {
 	return false
 }
 
-// Size returns the total number of key-value pairs
+// Size returns the total number of key-value pairs.
 func (mm *MultiMap[K, V]) Size() int {
 	total := 0
 	for _, values := range mm.data {
@@ -127,12 +127,12 @@ func (mm *MultiMap[K, V]) Size() int {
 	return total
 }
 
-// KeySize returns the number of unique keys
+// KeySize returns the number of unique keys.
 func (mm *MultiMap[K, V]) KeySize() int {
 	return len(mm.data)
 }
 
-// ValueCount returns the number of values for a given key
+// ValueCount returns the number of values for a given key.
 func (mm *MultiMap[K, V]) ValueCount(key K) int {
 	if values, exists := mm.data[key]; exists {
 		return len(values)
@@ -140,17 +140,17 @@ func (mm *MultiMap[K, V]) ValueCount(key K) int {
 	return 0
 }
 
-// IsEmpty checks if the multimap is empty
+// IsEmpty checks if the multimap is empty.
 func (mm *MultiMap[K, V]) IsEmpty() bool {
 	return len(mm.data) == 0
 }
 
-// Clear removes all elements from the multimap
+// Clear removes all elements from the multimap.
 func (mm *MultiMap[K, V]) Clear() {
 	mm.data = make(map[K][]V)
 }
 
-// Keys returns all keys in the multimap
+// Keys returns all keys in the multimap.
 func (mm *MultiMap[K, V]) Keys() []K {
 	keys := make([]K, 0, len(mm.data))
 	for key := range mm.data {
@@ -159,7 +159,7 @@ func (mm *MultiMap[K, V]) Keys() []K {
 	return keys
 }
 
-// Values returns all values in the multimap
+// Values returns all values in the multimap.
 func (mm *MultiMap[K, V]) Values() []V {
 	var values []V
 	for _, vals := range mm.data {
@@ -168,7 +168,7 @@ func (mm *MultiMap[K, V]) Values() []V {
 	return values
 }
 
-// UniqueValues returns unique values in the multimap
+// UniqueValues returns unique values in the multimap.
 func (mm *MultiMap[K, V]) UniqueValues() []V {
 	valueSet := make(map[string]V)
 	for _, vals := range mm.data {
@@ -185,7 +185,7 @@ func (mm *MultiMap[K, V]) UniqueValues() []V {
 	return values
 }
 
-// Entries returns all key-value pairs as a slice of Entry structs
+// Entries returns all key-value pairs as a slice of Entry structs.
 type Entry[K comparable, V any] struct {
 	Key   K
 	Value V
@@ -201,7 +201,7 @@ func (mm *MultiMap[K, V]) Entries() []Entry[K, V] {
 	return entries
 }
 
-// ToMap converts the multimap to a regular map (keeping only the last value for each key)
+// ToMap converts the multimap to a regular map (keeping only the last value for each key).
 func (mm *MultiMap[K, V]) ToMap() map[K]V {
 	result := make(map[K]V)
 	for key, values := range mm.data {
@@ -212,7 +212,7 @@ func (mm *MultiMap[K, V]) ToMap() map[K]V {
 	return result
 }
 
-// ToMapOfSlices converts the multimap to a map of slices
+// ToMapOfSlices converts the multimap to a map of slices.
 func (mm *MultiMap[K, V]) ToMapOfSlices() map[K][]V {
 	result := make(map[K][]V)
 	for key, values := range mm.data {
@@ -222,12 +222,12 @@ func (mm *MultiMap[K, V]) ToMapOfSlices() map[K][]V {
 	return result
 }
 
-// String returns a string representation of the multimap
+// String returns a string representation of the multimap.
 func (mm *MultiMap[K, V]) String() string {
 	return fmt.Sprintf("MultiMap%v", mm.ToMapOfSlices())
 }
 
-// ForEach applies a function to each key-value pair
+// ForEach applies a function to each key-value pair.
 func (mm *MultiMap[K, V]) ForEach(fn func(K, V)) {
 	for key, values := range mm.data {
 		for _, value := range values {
@@ -236,7 +236,7 @@ func (mm *MultiMap[K, V]) ForEach(fn func(K, V)) {
 	}
 }
 
-// ForEachKey applies a function to each key and its associated values
+// ForEachKey applies a function to each key and its associated values.
 func (mm *MultiMap[K, V]) ForEachKey(fn func(K, []V)) {
 	for key, values := range mm.data {
 		valuesCopy := make([]V, len(values))
@@ -245,7 +245,7 @@ func (mm *MultiMap[K, V]) ForEachKey(fn func(K, []V)) {
 	}
 }
 
-// Filter returns a new multimap containing entries that satisfy the predicate
+// Filter returns a new multimap containing entries that satisfy the predicate.
 func (mm *MultiMap[K, V]) Filter(predicate func(K, V) bool) *MultiMap[K, V] {
 	result := NewMultiMap[K, V]()
 	for key, values := range mm.data {
@@ -258,7 +258,7 @@ func (mm *MultiMap[K, V]) Filter(predicate func(K, V) bool) *MultiMap[K, V] {
 	return result
 }
 
-// FilterKeys returns a new multimap containing entries with keys that satisfy the predicate
+// FilterKeys returns a new multimap containing entries with keys that satisfy the predicate.
 func (mm *MultiMap[K, V]) FilterKeys(predicate func(K) bool) *MultiMap[K, V] {
 	result := NewMultiMap[K, V]()
 	for key, values := range mm.data {
@@ -271,7 +271,7 @@ func (mm *MultiMap[K, V]) FilterKeys(predicate func(K) bool) *MultiMap[K, V] {
 	return result
 }
 
-// FilterValues returns a new multimap containing entries with values that satisfy the predicate
+// FilterValues returns a new multimap containing entries with values that satisfy the predicate.
 func (mm *MultiMap[K, V]) FilterValues(predicate func(V) bool) *MultiMap[K, V] {
 	result := NewMultiMap[K, V]()
 	for key, values := range mm.data {
@@ -284,7 +284,7 @@ func (mm *MultiMap[K, V]) FilterValues(predicate func(V) bool) *MultiMap[K, V] {
 	return result
 }
 
-// Clone creates a deep copy of the multimap
+// Clone creates a deep copy of the multimap.
 func (mm *MultiMap[K, V]) Clone() *MultiMap[K, V] {
 	result := NewMultiMap[K, V]()
 	for key, values := range mm.data {
@@ -295,7 +295,7 @@ func (mm *MultiMap[K, V]) Clone() *MultiMap[K, V] {
 	return result
 }
 
-// Equals checks if two multimaps contain the same key-value pairs
+// Equals checks if two multimaps contain the same key-value pairs.
 func (mm *MultiMap[K, V]) Equals(other *MultiMap[K, V]) bool {
 	if mm.KeySize() != other.KeySize() {
 		return false
@@ -335,7 +335,7 @@ func (mm *MultiMap[K, V]) Equals(other *MultiMap[K, V]) bool {
 	return true
 }
 
-// GetSortedKeys returns keys sorted by a custom comparator
+// GetSortedKeys returns keys sorted by a custom comparator.
 func (mm *MultiMap[K, V]) GetSortedKeys(less func(K, K) bool) []K {
 	keys := mm.Keys()
 	sort.Slice(keys, func(i, j int) bool {
@@ -344,7 +344,7 @@ func (mm *MultiMap[K, V]) GetSortedKeys(less func(K, K) bool) []K {
 	return keys
 }
 
-// GetSortedValues returns values for a key sorted by a custom comparator
+// GetSortedValues returns values for a key sorted by a custom comparator.
 func (mm *MultiMap[K, V]) GetSortedValues(key K, less func(V, V) bool) []V {
 	values := mm.Get(key)
 	sort.Slice(values, func(i, j int) bool {

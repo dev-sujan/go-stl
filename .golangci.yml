@@ -1,80 +1,120 @@
+# golangci-lint configuration for go-stl project
+# https://golangci-lint.run/usage/configuration/
+
 run:
+  # Timeout for running linters, e.g. 5m
   timeout: 5m
-  go: "1.22.0"
+  # Include test files for analysis
+  tests: true
+  # Limit the memory usage to 2GB
+  mem: 2048
+  # Select the Go version to target
+  go: "1.24"
 
-linters:
-  enable:
-    # Code format and style
-    - gofmt
-    - goimports
-    - gocritic
-    - stylecheck
-    - whitespace
+# Output configuration options
+output:
+  # Format for output
+  formats:
+    - format: colored-line-number
+  # Print lines of code with issue
+  print-issued-lines: true
+  # Print linter name in the end of issue text
+  print-linter-name: true
 
-    # Code correctness
-    - govet
-    - errcheck
-    - staticcheck
-    - gosimple
-    - ineffassign
-    - typecheck
-
-    # Code simplification
-    - unconvert
-    - unused
-    - unparam
-
-    # Security
-    - gosec
-    - noctx
-
-    # Complexity and duplication
-    - gocyclo
-    - dupl
-    - goconst
-
-    # Documentation and naming
-    - misspell
-    - godox
-    - goprintffuncname
-
-    # Other
-    - mnd  # Replacing deprecated gomnd
-    - nakedret
-    - nolintlint
-    - rowserrcheck
-
+# Linters settings
 linters-settings:
-  # Complexity checks
-  gocyclo:
-    min-complexity: 15
+  errcheck:
+    # Report about not checking of errors in type assertions: `a := b.(MyStruct)`
+    check-type-assertions: true
+    # Report about assignment of errors to blank identifier: `_ = err`
+    check-blank: true
   
-  goconst:
-    min-len: 3
-    min-occurrences: 3
+  govet:
+    # Enable all analyzers
+    enable-all: true
+    # Disable specific analyzers
+    disable:
+      - shadow
     
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - style
-      - performance
-    disabled-checks:
-      - unnamedResult  # Disable unnamed result check
+  staticcheck:
+    # Not needed here as we've moved it to run.go
+    
+  gocyclo:
+    # Minimal code complexity to report
+    min-complexity: 15
+    
+  revive:
+    # Maximum number of rules per one linter
+    max-open-files: 2048
+    rules:
+      - name: exported
+        severity: warning
+        disabled: false
+        arguments:
+          - "checkPrivateReceivers"
+          - "disableStutteringCheck"
+          
+  gofmt:
+    # Simplify code: gofmt with `-s` option
+    simplify: true
+    
+  goimports:
+    # Put imports beginning with prefix after 3rd-party packages
+    local-prefixes: github.com/dev-sujan/go-stl
 
+# Linters configurations
+linters:
+  disable-all: true
+  enable:
+    - errcheck        # Checks for unchecked errors
+    - gosimple        # Suggests code simplifications
+    - govet           # Reports suspicious constructs
+    - ineffassign     # Detects unused assignments
+    - staticcheck     # Static analysis checks
+    - unused          # Checks for unused constants, variables, functions, and types
+    - bodyclose       # Checks whether HTTP response bodies are closed
+    - dogsled         # Checks for too many blank identifiers
+    - dupl            # Finds code clones
+    - gochecknoinits  # Checks that no init functions are present
+    - gocognit        # Computes and checks cognitive complexity
+    - goconst         # Finds repeated strings that could be constants
+    - gocritic        # Provides diagnostics that check for bugs, performance and style issues
+    - gocyclo         # Checks function cyclomatic complexity
+    - godot           # Checks if comments end with a period
+    - gofmt           # Checks if code was gofmt-ed
+    - goimports       # Checks if imports are formatted properly
+    - revive          # Fast, configurable, extensible, flexible, and beautiful linter for Go
+    - misspell        # Finds commonly misspelled English words
+    - nakedret        # Finds naked returns
+    - prealloc        # Finds slice declarations that could potentially be preallocated
+    - unconvert       # Removes unnecessary type conversions
+    - unparam         # Reports unused function parameters
+    - whitespace      # Checks for unnecessary whitespace
+    - copyloopvar     # Checks for copied loop variables
+
+# Issues configuration
 issues:
-  # Exclude specific linters from test files and examples
+  # Maximum issues count per one linter
+  max-issues-per-linter: 0
+  # Maximum count of issues with the same text
+  max-same-issues: 0
+  # Make issues output unique by line
+  uniq-by-line: true
+  # Don't skip directories containing these files
+  exclude-dirs-use-default: true
+  # Excluding configuration
   exclude-rules:
-    # Test files can use magic numbers and may be more complex
+    # Exclude some linters from running on tests files
     - path: _test\.go
       linters:
-        - gomnd # Allow magic numbers in tests
-        - gocyclo # Allow more complex test functions
-        - dupl # Allow similar test cases
-
-    # Example code should be simple and straightforward
-    - path: examples/
-      linters:
-        - gomnd # Allow magic numbers in examples
-        - gocyclo # Allow simpler but maybe not optimal code
-        - dupl # Allow repeated examples
-        - gosec # Allow simplified security for examples
+        - gocyclo
+        - dupl
+        - gosec
+        - errcheck
+  
+  # Independently of option `exclude` we use default exclude patterns
+  exclude-use-default: true
+  
+  # Show only new issues: if there are unstaged changes or untracked files,
+  # only those changes are analyzed, else only changes in HEAD~ are analyzed
+  new: false

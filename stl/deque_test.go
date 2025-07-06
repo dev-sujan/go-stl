@@ -163,7 +163,7 @@ func TestDequeFromSlice(t *testing.T) {
 	}
 }
 
-// TestDequeContains is skipped as the method is not implemented
+// TestDequeContains is skipped as the method is not implemented.
 func TestDequeContains(t *testing.T) {
 	t.Skip("Contains method not implemented yet")
 }
