@@ -44,7 +44,7 @@ jobs:
       # Use the gosec GitHub Action for Windows
       - name: Run gosec with GitHub Action (Windows)
         if: runner.os == 'Windows'
-        uses: securego/gosec@v2.19.0
+        uses: securego/gosec@v2.22.5
         with:
           args: "-fmt sarif -out gosec-results.sarif ./stl"
           
