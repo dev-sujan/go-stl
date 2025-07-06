@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-07-06
+
+### Added
+- Added new GitHub Actions workflows for dedicated linting and testing
+- Added `.github/dependabot.yml` for automated dependency updates
+- Added new `gosec-matrix.yml` workflow for security scanning on multiple platforms
+
+### Changed
+- Improved CI/CD workflows with robust security scanning
+- Fixed dependency handling in GitHub Actions workflows
+- Enhanced error reporting in security scanning jobs
+- Refactored code to address linter warnings
+- Updated to Go 1.24 in all workflows
+
+### Fixed
+- Fixed issues with gosec security scanning on different platforms
+- Resolved dependency verification problems in GitHub Actions
+
+## [1.0.0] - 2025-06-01
+
 ### Added
 - Initial implementation of Go STL library
 - Set data structure with comprehensive operations
