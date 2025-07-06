@@ -7,17 +7,18 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/dev-sujan/go-stl.svg)](https://pkg.go.dev/github.com/dev-sujan/go-stl)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dev-sujan/go-stl)](https://goreportcard.com/report/github.com/dev-sujan/go-stl)
 [![Build Status](https://github.com/dev-sujan/go-stl/actions/workflows/ci.yml/badge.svg)](https://github.com/dev-sujan/go-stl/actions)
+[![Latest Release](https://img.shields.io/github/v/release/dev-sujan/go-stl)](https://github.com/dev-sujan/go-stl/releases/latest)
 [![codecov](https://codecov.io/gh/dev-sujan/go-stl/branch/main/graph/badge.svg)](https://codecov.io/gh/dev-sujan/go-stl)
 
 A comprehensive, robust, and user-friendly implementation of essential data structures and algorithms for Go, inspired by Java Collections and C++ STL. Designed for productivity, clarity, and performance, with a focus on generics, a consistent API, and advanced features.
 
 ---
 
-## � Ownership & Maintenance
+## 👤 Ownership & Maintenance
 
 This project is owned and maintained by [Sujan Maji](https://github.com/dev-sujan).
 
-## �💬 Community & Support
+## 💬 Community & Support
 
 - [Open an issue](https://github.com/dev-sujan/go-stl/issues)
 - [Discussions](https://github.com/dev-sujan/go-stl/discussions)
@@ -406,7 +407,7 @@ treeMap.ForEach(func(k string, v int) { fmt.Println(k, v) })
 - **Time Complexity:** Put/Get/Remove: O(log n) avg
 
 ### Stack
-LIFO structure with a rich API, random access, capacity, equality, and functional support.
+LIFO structure with a rich API, random access, capacity, and functional support.
 ```go
 stack := stl.NewStack[int]()
 stack.Push(1)
@@ -444,7 +445,7 @@ stack.ForEachReversed(func(x int) { fmt.Println(x) })
 - **Time Complexity:** Push/Pop/Peek: O(1); Random access: O(1); Search: O(n); Sort: O(n log n)
 
 ### Queue
-FIFO structure with a rich API, random access, capacity, equality, and functional support.
+FIFO structure with a rich API, random access, capacity, and functional support.
 ```go
 queue := stl.NewQueue[string]()
 queue.Enqueue("first")
@@ -590,6 +591,21 @@ For questions, suggestions, or support, please use GitHub Issues or Discussions.
 3. Add tests for new features
 4. Ensure all tests pass
 5. Submit a pull request
+
+### Commit Message Guidelines
+
+When contributing to this project, please follow these commit message conventions:
+
+- **feat:** A new feature or enhancement (e.g., `feat: add Red-Black Tree implementation`)
+- **fix:** A bug fix (e.g., `fix: resolve concurrency issue in Queue`)
+- **docs:** Documentation changes (e.g., `docs: improve MultiSet usage examples`)
+- **style:** Code style changes (formatting, missing semi-colons, etc.)
+- **refactor:** Code refactoring without changing functionality
+- **perf:** Performance improvements (e.g., `perf: optimize Set union operation`)
+- **test:** Adding or updating tests
+- **chore:** Changes to build process or auxiliary tools
+
+Each commit should have a subject line (50 chars max) and optionally a body with more detailed explanation.
 
 ---
 
