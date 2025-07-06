@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2025-07-06
+
+### Changed
+- Simplified CI/CD infrastructure by consolidating workflows into a single main workflow
+- Improved dependency verification with explicit checks for go.mod and go.sum
+- Enhanced error handling for tests and security scanning
+- Ensured consistent CI setup across all branches
+
+### Removed
+- Removed redundant workflow files (security-scan.yml, gosec-matrix.yml, golangci-lint.yml, go-test.yml)
+- Removed dependabot.yml to reduce maintenance overhead
+
 ## [1.1.0] - 2025-07-06
 
 ### Added
